@@ -307,7 +307,7 @@ function resetUpload() {
 
 async function loadFromSharePoint() {
   try {
-    const response = await fetch(SHAREPOINT_URL, { credentials: 'include' });
+    const response = await fetch(SHAREPOINT_URL);
     if (!response.ok) throw new Error('Erro ao acessar o SharePoint (status ' + response.status + ')');
     const buffer = await response.arrayBuffer();
     processBuffer(buffer, 'SharePoint');
