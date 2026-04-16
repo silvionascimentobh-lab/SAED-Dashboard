@@ -211,15 +211,16 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
 
 <div id="dashboard-area" style="display:none">
   <div class="tabs-bar">
-    <button class="tab-btn active" onclick="switchTab('d2026',this)">📊 Dashboard 2026</button>
-    <button class="tab-btn" onclick="switchTab('dgecc',this)">🎓 Dashboard GECC 2026</button>
+    <button class="tab-btn active" onclick="switchTab('d2026',this)">📊 Ações 2026</button>
+    <button class="tab-btn" onclick="switchTab('dgecc',this)">🎓 GECC 2026</button>
+    <button class="tab-btn" onclick="switchTab('dmaratonas',this)">🏃 Maratonas</button>
     <button class="tab-reload" onclick="resetUpload()">↩ Trocar arquivo</button>
   </div>
   <div class="file-info" id="file-info"></div>
 
   <!-- PAINEL 1 -->
   <div id="d2026" class="panel active">
-    <div class="panel-title">Dashboard de Cursos — 2026</div>
+    <div class="panel-title">Ações 2026</div>
     <div class="panel-sub">Visão geral das ações educacionais no exercício 2026</div>
     <div class="kpi-row" id="kpi-2026"></div>
     <div class="section-grid">
@@ -233,6 +234,13 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
           <svg class="donut" viewBox="0 0 110 110" id="donut-svg"></svg>
           <div class="donut-legend" id="donut-legend"></div>
         </div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">📅 Ações por Trimestre</div>
+      <div class="card-body">
+        <div class="list-tabs" id="trim-tabs"></div>
+        <div id="list-trimestre"></div>
       </div>
     </div>
     <div class="card" style="margin-bottom:1.25rem">
@@ -254,18 +262,11 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
         <div class="card-body"><div id="list-arealizar"></div></div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-header">📅 Ações por Trimestre</div>
-      <div class="card-body">
-        <div class="list-tabs" id="trim-tabs"></div>
-        <div id="list-trimestre"></div>
-      </div>
-    </div>
   </div>
 
   <!-- PAINEL 2 -->
   <div id="dgecc" class="panel">
-    <div class="panel-title">Dashboard GECC 2026 — Horas por Instrutor</div>
+    <div class="panel-title">GECC 2026 — Horas por Instrutor</div>
     <div class="panel-sub">Horas de Gerenciamento e Controle de Cursos (GECC) por instrutor no exercício 2026</div>
     <div class="kpi-row" id="kpi-gecc"></div>
     <div class="card">
@@ -275,6 +276,22 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
           <th>Instrutor</th><th class="num">Aula (h)</th>
           <th class="num">Material (h)</th><th class="num">Total GECC (h)</th><th class="num">Ações</th>
         </tr></thead><tbody id="gecc-tbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+  <!-- PAINEL MARATONAS -->
+  <div id="dmaratonas" class="panel">
+    <div class="panel-title">Maratonas Temáticas</div>
+    <div class="panel-sub">Histórico de maratonas temáticas realizadas e previstas</div>
+    <div class="kpi-row" id="kpi-maratonas"></div>
+    <div class="card">
+      <div class="card-header">📋 Lista de Maratonas</div>
+      <div class="card-body">
+        <table><thead><tr>
+          <th>#</th><th>Tema</th><th class="num">Ano</th>
+          <th>Data</th><th>Público-Alvo</th>
+          <th class="num">Participantes</th><th>Status</th>
+        </tr></thead><tbody id="maratonas-tbody"></tbody></table>
       </div>
     </div>
   </div>
@@ -333,25 +350,27 @@ function processFile(file) {
 function processBuffer(buffer, sourceName) {
   try {
       const wb = XLSX.read(buffer, { type: 'array', cellDates: true });
-      const required = ['Dashboard 2026', 'Dashboard GECC 2026', 'GECC 2026', 'Ações InCompany'];
+      const required = ['Dashboard 2026', 'Dashboard GECC 2026', 'GECC 2026', 'Ações InCompany', 'Dashboard Maratonas'];
       for (const r of required) {
         if (!wb.SheetNames.includes(r)) {
           showError(`Aba "${r}" não encontrada. Verifique se o arquivo correto foi selecionado.`);
           return;
         }
       }
-      const rDash     = parseSheet(wb, 'Dashboard 2026');
-      const rGecc     = parseSheet(wb, 'Dashboard GECC 2026');
-      const rGeccRaw  = parseSheet(wb, 'GECC 2026');
-      const rInComp   = parseSheet(wb, 'Ações InCompany');
+      const rDash      = parseSheet(wb, 'Dashboard 2026');
+      const rGecc      = parseSheet(wb, 'Dashboard GECC 2026');
+      const rGeccRaw   = parseSheet(wb, 'GECC 2026');
+      const rInComp    = parseSheet(wb, 'Ações InCompany');
+      const rMaratonas = parseSheet(wb, 'Dashboard Maratonas');
 
-      const data2026  = extractDash2026(rDash);
-      const dataGecc  = extractDashGecc(rGecc);
-      const acoes     = extractAcoes(rInComp);
+      const data2026   = extractDash2026(rDash);
+      const dataGecc   = extractDashGecc(rGecc);
+      const acoes      = extractAcoes(rInComp);
       const geccCursos = extractGeccCursos(rGeccRaw);
 
       renderDash2026(data2026, acoes);
       renderDashGecc(dataGecc, geccCursos);
+      renderMaratonas(rMaratonas);
 
       document.getElementById('file-info').textContent =
         `📁 ${sourceName}  ·  atualizado em ${new Date().toLocaleString('pt-BR')}`;
@@ -825,6 +844,49 @@ function toggleGeccInstr(idx) {
     detail.classList.add('open');
     tr.classList.add('selected');
   }
+}
+
+
+// ══════════════════════════════════════
+//  RENDER — MARATONAS
+//  Dashboard Maratonas:
+//  row[3]: KPIs — [0]=Total marat, [3]=Total part, [6]=Média
+//  row[4]: cabeçalho
+//  row[5+]: dados — [0]=#, [1]=data_num, [2]=Ano, [3]=Tema,
+//           [4]=Data, [5]=Status, [6]=Público, [7]=Participantes
+// ══════════════════════════════════════
+function renderMaratonas(rows) {
+  const num = v => (v===null||v===undefined||v==='') ? 0 : +v||0;
+  const str = v => v===null||v===undefined ? '' : String(v).trim();
+
+  // KPIs da linha 3 (índice 3)
+  const kpiRow = rows[3] || [];
+  const totMarat = num(kpiRow[0]);
+  const totPart  = num(kpiRow[3]);
+  const media    = num(kpiRow[6]);
+
+  document.getElementById('kpi-maratonas').innerHTML =
+    kpiHTML('#0a2a5e', totMarat,  'Total de Maratonas') +
+    kpiHTML('#2e72d2', totPart,   'Total de Participantes') +
+    kpiHTML('#e8a020', Math.round(media), 'Média de Participantes');
+
+  // Dados a partir da linha 5 (índice 5)
+  const dados = rows.slice(5).filter(r => r && r[3]);
+  const corStatus = s => s.toLowerCase() === 'realizado'
+    ? {bg:'#d4f0e5', fg:'#1a8a5a'} : {bg:'#fef3cd', fg:'#92600a'};
+
+  document.getElementById('maratonas-tbody').innerHTML = dados.map((r, i) => {
+    const t = corStatus(str(r[5]));
+    return `<tr>
+      <td>${num(r[0])}</td>
+      <td><strong>${str(r[3])}</strong></td>
+      <td class="num">${num(r[2])}</td>
+      <td>${str(r[4])}</td>
+      <td>${str(r[6])}</td>
+      <td class="num">${num(r[7]) > 0 ? num(r[7]) : '—'}</td>
+      <td><span class="tag" style="background:${t.bg};color:${t.fg}">${str(r[5])}</span></td>
+    </tr>`;
+  }).join('');
 }
 
 function switchTab(id, btn) {
