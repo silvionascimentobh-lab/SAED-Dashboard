@@ -415,10 +415,14 @@ function extractDash2026(rows) {
     d.participantes.push({ label, qtd: num(rows[i][4]) });
   });
 
-  for (let i = 32; i <= 38; i++) {
+  // Ler programas dinamicamente a partir do índice 32 até encontrar TOTAL ou fim
+  for (let i = 32; i < rows.length; i++) {
     const row = rows[i];
-    if (!row || !row[0] || str(row[0]) === 'TOTAL' || str(row[0]) === '(Sem Programa)') continue;
-    d.programas.push({ nome: str(row[0]), r: num(row[1]), a: num(row[2]) });
+    if (!row || !row[0]) continue;
+    const nome = str(row[0]);
+    if (nome === 'TOTAL' || nome === 'Programa') break;
+    if (nome === '(Sem Programa)') continue;
+    d.programas.push({ nome, r: num(row[1]), a: num(row[2]) });
   }
   return d;
 }
