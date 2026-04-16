@@ -130,6 +130,10 @@ tbody td{padding:.52rem .45rem;}
 .prog-course-name{flex:1;font-weight:600;}
 .prog-course-pub{font-size:.72rem;color:var(--texto-sub);}
 
+/* TABELA MARATONAS */
+#maratonas-tbody td:nth-child(2) { max-width: 220px; white-space: normal; line-height: 1.4; }
+#maratonas-tbody td { white-space: nowrap; }
+
 /* TABELA GECC CLICÁVEL */
 .gecc-tr-click{cursor:pointer;transition:background .15s;}
 .gecc-tr-click:hover{background:#edf3ff;}
@@ -859,8 +863,8 @@ function renderMaratonas(rows) {
   const num = v => (v===null||v===undefined||v==='') ? 0 : +v||0;
   const str = v => v===null||v===undefined ? '' : String(v).trim();
 
-  // KPIs da linha 3 (índice 3)
-  const kpiRow = rows[3] || [];
+  // KPIs na linha índice 4: [0]=Total marat, [3]=Total part, [6]=Média
+  const kpiRow = rows[4] || [];
   const totMarat = num(kpiRow[0]);
   const totPart  = num(kpiRow[3]);
   const media    = num(kpiRow[6]);
@@ -870,8 +874,8 @@ function renderMaratonas(rows) {
     kpiHTML('#2e72d2', totPart,   'Total de Participantes') +
     kpiHTML('#e8a020', Math.round(media), 'Média de Participantes');
 
-  // Dados a partir da linha 5 (índice 5)
-  const dados = rows.slice(5).filter(r => r && r[3]);
+  // Dados a partir do índice 7 (pula título, subtítulo, linha vazia, KPI labels, KPI valores, linha vazia, cabeçalho)
+  const dados = rows.slice(7).filter(r => r && r[3]);
   const corStatus = s => s.toLowerCase() === 'realizado'
     ? {bg:'#d4f0e5', fg:'#1a8a5a'} : {bg:'#fef3cd', fg:'#92600a'};
 
