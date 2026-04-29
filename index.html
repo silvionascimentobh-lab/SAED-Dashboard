@@ -278,7 +278,8 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
       <div class="card-body">
         <table><thead><tr>
           <th>Instrutor</th><th class="num">Aula (h)</th>
-          <th class="num">Material (h)</th><th class="num">Total GECC (h)</th><th class="num">Ações</th>
+          <th class="num">Material (h)</th><th class="num">Examinador (h)</th>
+          <th class="num">Total GECC (h)</th><th class="num">Ações</th>
         </tr></thead><tbody id="gecc-tbody"></tbody></table>
       </div>
     </div>
@@ -495,9 +496,8 @@ function extractGeccCursos(rows) {
 
 // ══════════════════════════════════════
 //  EXTRAÇÃO — DASHBOARD GECC 2026
-//  Mapeamento confirmado via Node.js:
 //  Cabeçalho em [3], dados a partir de [4]
-//  [0]=Instrutor [1]=Aula [2]=Material [3]=Total [4]=Ações
+//  [0]=Instrutor [1]=Aula [2]=Material [3]=Examinador [4]=Total [5]=Ações
 // ══════════════════════════════════════
 function extractDashGecc(rows) {
   const d = { instrutores: [] };
@@ -506,7 +506,7 @@ function extractDashGecc(rows) {
     if (!row || !row[0]) continue;
     const nome = str(row[0]);
     if (nome.toUpperCase().includes('TOTAL')) continue;
-    d.instrutores.push({ nome, aula: num(row[1]), mat: num(row[2]), total: num(row[3]), acoes: num(row[4]) });
+    d.instrutores.push({ nome, aula: num(row[1]), mat: num(row[2]), exam: num(row[3]), total: num(row[4]), acoes: num(row[5]) });
   }
   return d;
 }
@@ -710,8 +710,9 @@ function renderDashGecc(d, geccCursos) {
   const inst = d.instrutores.filter(i =>
     i.nome && !i.nome.toUpperCase().includes('TOTAL') &&
     !i.nome.toLowerCase().includes('servidores, colabor'));
-  const totAula  = inst.reduce((s,i)=>s+i.aula, 0);
-  const totMat   = inst.reduce((s,i)=>s+i.mat,  0);
+  const totAula  = inst.reduce((s,i)=>s+i.aula,  0);
+  const totMat   = inst.reduce((s,i)=>s+i.mat,   0);
+  const totExam  = inst.reduce((s,i)=>s+i.exam,  0);
   const totTotal = inst.reduce((s,i)=>s+i.total, 0);
   const totAcoes = inst.reduce((s,i)=>s+i.acoes, 0);
 
@@ -719,6 +720,7 @@ function renderDashGecc(d, geccCursos) {
     kpiHTML('#0a2a5e', fmt(totTotal)+'h', 'Total GECC (h)') +
     kpiHTML('#2e72d2', totAula+'h',        'Horas de Aula') +
     kpiHTML('#1a8a5a', fmt(totMat)+'h',    'Horas de Material') +
+    kpiHTML('#9b30d9', fmt(totExam)+'h',   'Horas Examinador') +
     kpiHTML('#6a1fac', totAcoes,            'Participações') +
     kpiHTML('#e8a020', inst.length,         'Instrutores Ativos');
 
@@ -739,11 +741,12 @@ function renderDashGecc(d, geccCursos) {
 
       return `<tr class="gecc-tr-click" id="gecc-tr-${idx}" onclick="toggleGeccInstr(${idx})">
         <td>${i.nome}</td><td class="num">${i.aula}</td>
-        <td class="num">${fmt(i.mat)}</td><td class="num bold">${fmt(i.total)}</td>
+        <td class="num">${fmt(i.mat)}</td><td class="num">${fmt(i.exam)}</td>
+        <td class="num bold">${fmt(i.total)}</td>
         <td class="num">${i.acoes}</td>
       </tr>
       <tr class="gecc-detail-row" id="gecc-detail-${idx}">
-        <td class="gecc-detail-cell" colspan="5">
+        <td class="gecc-detail-cell" colspan="6">
           <div class="gecc-course-list">${detalhe}</div>
         </td>
       </tr>`;
@@ -751,7 +754,8 @@ function renderDashGecc(d, geccCursos) {
     `<tr style="border-top:2px solid var(--borda)">
       <td class="bold">TOTAL GERAL</td>
       <td class="num bold">${totAula}</td><td class="num bold">${fmt(totMat)}</td>
-      <td class="num bold">${fmt(totTotal)}</td><td class="num bold">${totAcoes}</td>
+      <td class="num bold">${fmt(totExam)}</td><td class="num bold">${fmt(totTotal)}</td>
+      <td class="num bold">${totAcoes}</td>
     </tr>`;
 
 
