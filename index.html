@@ -10,13 +10,18 @@
 :root {
   --azul:#0a2a5e; --azul-med:#1a4a9a; --azul-claro:#2e72d2;
   --accent:#e8a020; --verde:#1a8a5a;
-  --cinza-bg:#f0f4fb; --cinza-card:#ffffff;
-  --texto:#1a1f30; --texto-sub:#5a6480; --borda:#d6e0f5;
+  --cinza-bg:#eef2f9; --cinza-card:#ffffff;
+  --texto:#1a1f30; --texto-sub:#5a6480; --borda:#dde6f4;
+  --sombra-sm:0 1px 3px rgba(20,40,80,.06),0 1px 2px rgba(20,40,80,.04);
+  --sombra-md:0 4px 12px rgba(20,40,80,.08),0 2px 4px rgba(20,40,80,.04);
+  --sombra-lg:0 12px 28px rgba(20,40,80,.12),0 4px 8px rgba(20,40,80,.06);
+  --grad-azul:linear-gradient(135deg,#0a2a5e,#143d80);
+  --grad-header:linear-gradient(100deg,#081f47,#0a2a5e 55%,#123763);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--cinza-bg);color:var(--texto);min-height:100vh;}
+body{font-family:'DM Sans',sans-serif;background:var(--cinza-bg);background-image:radial-gradient(circle at 12% 8%,rgba(46,114,210,.05),transparent 40%),radial-gradient(circle at 88% 0%,rgba(26,138,90,.04),transparent 35%);background-attachment:fixed;color:var(--texto);min-height:100vh;}
 
-header{background:var(--azul);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.3);}
+header{background:var(--grad-header);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 4px 18px rgba(8,31,71,.28);backdrop-filter:saturate(1.2);border-bottom:1px solid rgba(255,255,255,.06);box-shadow-legacy:0 2px 16px rgba(0,0,0,.3);}
 .header-left{display:flex;align-items:center;gap:.75rem;}
 .header-badge{background:var(--accent);color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:.68rem;letter-spacing:.12em;padding:.25rem .6rem;border-radius:4px;}
 .header-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:#fff;}
@@ -34,7 +39,7 @@ header{background:var(--azul);padding:0 2rem;display:flex;align-items:center;jus
 .upload-error{margin-top:1rem;background:#fde8e8;color:#a00;border-radius:8px;padding:.6rem 1rem;font-size:.8rem;display:none;}
 
 .tabs-bar{display:flex;align-items:center;gap:.25rem;padding:1.25rem 2rem .5rem;background:var(--azul);}
-.tab-btn{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.04em;padding:.5rem 1.15rem;border:none;border-radius:6px 6px 0 0;cursor:pointer;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);transition:all .2s;}
+.tab-btn{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.04em;padding:.55rem 1.15rem;border:none;border-radius:8px 8px 0 0;cursor:pointer;transition:background .2s,color .2s,transform .15s;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);transition:all .2s;}
 .tab-btn.active{background:var(--cinza-bg);color:var(--azul);}
 .tab-btn:hover:not(.active){background:rgba(255,255,255,.22);color:#fff;}
 .tab-reload{margin-left:auto;font-size:.72rem;background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:.35rem .9rem;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:.4rem;transition:background .15s;}
@@ -47,23 +52,35 @@ header{background:var(--azul);padding:0 2rem;display:flex;align-items:center;jus
 .panel-sub{font-size:.8rem;color:var(--texto-sub);margin-bottom:1.5rem;}
 
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1rem;margin-bottom:1.5rem;}
-.kpi{background:var(--cinza-card);border:1px solid var(--borda);border-radius:10px;padding:1.1rem 1.2rem;position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;}
+.kpi{background:var(--cinza-card);border:1px solid var(--borda);border-radius:12px;padding:1.15rem 1.2rem .95rem;position:relative;overflow:hidden;box-shadow:var(--sombra-sm);transition:transform .2s,box-shadow .2s;}
 .kpi:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(10,42,94,.1);}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--azul-claro));}
-.kpi-value{font-family:'Syne',sans-serif;font-size:2.1rem;font-weight:800;color:var(--kpi-color,var(--azul));line-height:1;margin-bottom:.3rem;}
+.kpi-value{font-family:'Syne',sans-serif;font-size:2.15rem;font-weight:800;color:var(--kpi-color,var(--azul));line-height:1;margin-bottom:.3rem;font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
 .kpi-label{font-size:.72rem;color:var(--texto-sub);text-transform:uppercase;letter-spacing:.06em;font-weight:500;}
+/* ── microinterações globais (todas as abas) ── */
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--azul-claro));opacity:.9;}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--sombra-md);}
+.card:hover{box-shadow:var(--sombra-lg);}
+.tab-btn:hover{transform:translateY(-1px);}
+.bar-row:hover .bar-label{color:var(--azul);font-weight:600;}
+.bar-row{transition:background .12s;border-radius:7px;}
+.bar-row:hover{background:#f4f8ff;}
+@media (max-width:640px){
+  .kpi-value{font-size:1.7rem;}
+  .card:hover,.kpi:hover{transform:none;}
+}
 
 .section-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:1.25rem;margin-bottom:1.25rem;}
-.card{background:var(--cinza-card);border:1px solid var(--borda);border-radius:10px;overflow:hidden;}
-.card-header{background:var(--azul);padding:.7rem 1.2rem;font-family:'Syne',sans-serif;font-size:.73rem;font-weight:700;color:#fff;letter-spacing:.07em;text-transform:uppercase;}
+.card{background:var(--cinza-card);border:1px solid var(--borda);border-radius:13px;overflow:hidden;box-shadow:var(--sombra-md);transition:box-shadow .25s,transform .25s;}
+.card-header{background:var(--grad-azul);padding:.8rem 1.2rem;font-family:'Syne',sans-serif;font-size:.73rem;font-weight:700;color:#fff;letter-spacing:.07em;border-bottom:1px solid rgba(255,255,255,.08);text-transform:uppercase;}
 .card-body{padding:1rem 1.2rem;}
 
 .bar-row{display:flex;align-items:center;gap:.75rem;padding:.48rem 0;border-bottom:1px solid var(--borda);animation:fadeIn .4s ease both;}
 .bar-row:last-child{border-bottom:none;}
 @keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
 .bar-label{flex:0 0 auto;width:200px;font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bar-track{flex:1;height:9px;background:#e4ecff;border-radius:99px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:99px;background:var(--bar-color,var(--azul-claro));}
+.bar-track{flex:1;height:11px;background:#e4ecff;border-radius:99px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(20,40,80,.08);}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--bar-color,var(--azul-claro)),color-mix(in srgb,var(--bar-color,var(--azul-claro)) 78%,#fff));box-shadow:inset 0 1px 0 rgba(255,255,255,.35);transition:width .8s cubic-bezier(.22,1,.36,1);}
 .bar-val{flex:0 0 48px;text-align:right;font-size:.8rem;font-variant-numeric:tabular-nums;font-weight:600;color:var(--azul);}
 
 .donut-wrap{display:flex;align-items:center;gap:1.5rem;padding:.25rem 0;}
@@ -73,8 +90,8 @@ svg.donut{flex:0 0 110px;height:110px;}
 .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 
 table{width:100%;border-collapse:collapse;font-size:.82rem;}
-thead th{text-align:left;font-size:.67rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--texto-sub);padding:.4rem .45rem;border-bottom:2px solid var(--borda);}
-tbody tr{border-bottom:1px solid var(--borda);}
+thead th{text-align:left;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--azul);padding:.55rem .45rem;border-bottom:2px solid var(--azul-claro);position:sticky;top:64px;background:var(--cinza-card);z-index:5;}
+tbody tr{border-bottom:1px solid var(--borda);transition:background .12s;}tbody tr:hover{background:#f4f8ff;}
 tbody tr:last-child{border-bottom:none;}
 tbody td{padding:.52rem .45rem;}
 .num{text-align:right;font-variant-numeric:tabular-nums;}
@@ -115,6 +132,68 @@ tbody td{padding:.52rem .45rem;}
 .inst-hours{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;color:var(--azul);display:block;}
 .inst-hours-label{font-size:.62rem;color:var(--texto-sub);}
 .list-empty{padding:2rem;text-align:center;color:var(--texto-sub);font-size:.83rem;}
+
+/* ═══ ACOMPANHAMENTO CEDUC ═══ */
+/* hero: gauge + kpis */
+.ceduc-hero{display:flex;gap:1rem;align-items:stretch;margin-bottom:1.1rem;flex-wrap:wrap;}
+.gauge-card{background:linear-gradient(145deg,#0a2a5e,#123d7e);border-radius:14px;padding:.5rem 1.4rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(10,42,94,.25);}
+.gauge-wrap{width:128px;height:128px;}
+.gauge-svg{width:100%;height:100%;}
+.gauge-bg{fill:none;stroke:rgba(255,255,255,.16);stroke-width:11;}
+.gauge-fg{fill:none;stroke:#3ddc8c;stroke-width:11;stroke-linecap:round;transform:rotate(-90deg);transform-origin:70px 70px;transition:stroke-dashoffset 1.1s cubic-bezier(.22,1,.36,1);}
+.gauge-val{fill:#fff;font-size:30px;font-weight:800;text-anchor:middle;font-family:inherit;}
+.gauge-cap{fill:rgba(255,255,255,.7);font-size:11px;font-weight:600;text-anchor:middle;letter-spacing:.08em;text-transform:uppercase;}
+
+/* tooltip flutuante */
+#ceduc-tip{position:fixed;z-index:999;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s;background:#0f1d33;color:#fff;border-radius:9px;padding:.5rem .75rem;font-size:.74rem;box-shadow:0 8px 24px rgba(0,0,0,.28);display:flex;align-items:center;gap:.5rem;white-space:nowrap;}
+#ceduc-tip.show{opacity:1;transform:translateY(0);}
+#ceduc-tip .tip-dot{width:10px;height:10px;border-radius:3px;display:inline-block;}
+#ceduc-tip .tip-num{color:#aeb9cc;font-weight:600;}
+#ceduc-tip b{font-weight:800;}
+
+.ceduc-alert{display:flex;align-items:center;gap:.6rem;background:#fff4e2;border:1px solid #e8a020;color:#92600a;border-radius:9px;padding:.6rem .9rem;font-size:.8rem;font-weight:600;margin-bottom:1rem;}
+.stk-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;}
+.stk-label{width:170px;min-width:170px;font-size:.73rem;font-weight:700;color:var(--texto);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.stk-track{position:relative;flex:1;height:30px;background:linear-gradient(180deg,#eef1f6,#e7ebf2);border-radius:8px;display:flex;overflow:visible;box-shadow:inset 0 1px 2px rgba(20,40,80,.06);}
+.stk-grid{position:absolute;inset:0;pointer-events:none;z-index:0;}
+.grid-line{position:absolute;top:0;bottom:0;width:0;border-left:1px solid rgba(120,134,160,.18);}
+.grid-line.grid-cem{border-left:1px dashed rgba(10,42,94,.3);}
+.stk-seg{position:relative;height:100%;display:flex;align-items:center;justify-content:center;font-size:.67rem;font-weight:800;cursor:pointer;white-space:nowrap;overflow:hidden;z-index:1;transition:width .85s cubic-bezier(.22,1,.36,1),filter .15s;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -2px 3px rgba(0,0,0,.07);}
+.stk-seg:first-of-type{border-radius:8px 0 0 8px;}
+.stk-seg:last-of-type{border-radius:0 8px 8px 0;}
+.stk-seg:hover{filter:brightness(1.08) saturate(1.1);}
+.stk-seg.sel{box-shadow:inset 0 0 0 2px #0a2a5e;}
+.stk-gap{width:4px;min-width:4px;height:100%;background:#fff;position:relative;z-index:2;}
+.stk-mark{position:absolute;top:-6px;bottom:-6px;width:0;border-left:3px solid #0a2a5e;z-index:4;pointer-events:none;}
+.stk-mark::after{content:'100%';position:absolute;top:-15px;left:-15px;font-size:.58rem;font-weight:800;color:#fff;background:#0a2a5e;padding:1px 5px;border-radius:5px;letter-spacing:.02em;}
+.stk-total{width:42px;min-width:42px;font-size:.75rem;font-weight:800;color:var(--texto-sub);text-align:right;}
+.stk-badge{min-width:42px;font-size:.66rem;font-weight:800;color:#0e6b43;background:#e7f6ef;border:1px solid #b6e2cd;border-radius:99px;padding:.1rem .4rem;text-align:center;}
+.stk-axis-row{margin-top:.3rem;margin-bottom:0;}
+.stk-axis{position:relative;flex:1;height:22px;}
+.ax-tick{position:absolute;top:0;transform:translateX(-50%);}
+.ax-tick::before{content:'';position:absolute;left:50%;top:-2px;height:5px;border-left:1.5px solid var(--texto-sub);}
+.ax-tick span{display:block;margin-top:5px;font-size:.62rem;font-weight:700;color:var(--texto-sub);}
+.ax-tick.ax-cem::before{border-left:3px solid #0a2a5e;height:7px;}
+.ax-tick.ax-cem span{color:#0a2a5e;font-weight:800;font-size:.66rem;}
+.bar-clickseg{cursor:pointer;transition:filter .15s;}
+.bar-clickseg:hover{filter:brightness(1.18);}
+.bar-clickseg.sel{box-shadow:inset 0 0 0 2px #0a2a5e;}
+.leg-groups{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem;}
+.leg-group{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;padding:.45rem .8rem;border-radius:9px;font-size:.72rem;font-weight:600;color:var(--texto);}
+.leg-group .cl-dot{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:.3rem;vertical-align:-1px;}
+.leg-gtitle{font-size:.64rem;font-weight:800;letter-spacing:.07em;}
+.leg-ader{background:#e7f6ef;border:1.5px solid #1a8a5a;}
+.leg-ader .leg-gtitle{color:#0e6b43;}
+.leg-nao{background:#f2f4f8;border:1.5px solid #aab2c2;}
+.leg-nao .leg-gtitle{color:#5a6480;}
+.ceduc-detail{display:none;margin-top:.95rem;border-top:1px dashed var(--borda);padding-top:.85rem;}
+.ceduc-detail.open{display:block;}
+.cd-title{font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.55rem;color:var(--texto-sub);}
+.cd-item{display:flex;align-items:center;gap:.7rem;padding:.5rem .7rem;background:#fff;border:1px solid var(--borda);border-left:4px solid var(--item-cor,#2e72d2);border-radius:7px;margin-bottom:.4rem;font-size:.8rem;animation:fadeIn .25s ease both;}
+.cd-main{flex:1;min-width:0;}
+.cd-nome{font-weight:700;}
+.cd-meta{font-size:.7rem;color:var(--texto-sub);margin-top:.15rem;line-height:1.45;}
+.cd-tag{font-size:.64rem;font-weight:800;padding:.16rem .55rem;border-radius:99px;white-space:nowrap;}
 
 /* TABELA PROGRAMAS CLICÁVEL */
 .prog-tr-click{cursor:pointer;transition:background .15s;}
@@ -208,7 +287,7 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
     <div id="manual-fallback" style="display:none;margin-top:1.5rem">
       <div style="font-size:.78rem;color:var(--texto-sub);margin-bottom:1rem">Ou carregue manualmente:</div>
       <label class="upload-btn" for="file-input">Selecionar arquivo .xlsx</label>
-      <input type="file" id="file-input" accept=".xlsx,.xlsm,.xls" style="display:none">
+      <input type="file" id="file-input" accept=".xlsx,.xls" style="display:none">
     </div>
   </div>
 </div>
@@ -218,6 +297,7 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
     <button class="tab-btn active" onclick="switchTab('d2026',this)">📊 Ações 2026</button>
     <button class="tab-btn" onclick="switchTab('dgecc',this)">🎓 GECC 2026</button>
     <button class="tab-btn" onclick="switchTab('dmaratonas',this)">🏃 Maratonas</button>
+    <button class="tab-btn" onclick="switchTab('dceduc',this)">📌 Acompanhamento CEDUC</button>
     <button class="tab-reload" onclick="resetUpload()">↩ Trocar arquivo</button>
   </div>
   <div class="file-info" id="file-info"></div>
@@ -300,6 +380,46 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
       </div>
     </div>
   </div>
+  <!-- PAINEL ACOMPANHAMENTO CEDUC -->
+  <div id="dceduc" class="panel">
+    <div class="panel-title">Acompanhamento CEDUC</div>
+    <div class="panel-sub">Execução do Plano de Capacitação 2026 — clique nas fatias dos gráficos para ver os cursos</div>
+    <div id="ceduc-alert"></div>
+    <div class="ceduc-hero">
+      <div class="gauge-card">
+        <div class="gauge-wrap" id="ceduc-gauge"></div>
+      </div>
+      <div class="kpi-row" id="kpi-ceduc" style="flex:1;margin-bottom:0"></div>
+    </div>
+    <div id="ceduc-tip"></div>
+
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-header">📊 Composição sobre o Planejado — por Trimestre <span style="font-weight:400;font-size:.72rem;color:var(--texto-sub)">(barra = 100% do planejado; Fora do Plano empilha além)</span></div>
+      <div class="card-body">
+        <div id="ceduc-comp"></div>
+        <div class="color-legend" id="ceduc-comp-legend"></div>
+        <div class="ceduc-detail" id="ceduc-comp-detail"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-header">📚 Cursos 2026 — Total e por Programa <span style="font-weight:400;font-size:.72rem;color:var(--texto-sub)">(exclui cancelados)</span></div>
+      <div class="card-body">
+        <div id="ceduc-cursos"></div>
+        <div class="ceduc-detail" id="ceduc-cursos-detail"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">🎯 Programas — % sobre o Planejado</div>
+      <div class="card-body">
+        <div class="list-tabs" id="ceduc-prog-tabs"></div>
+        <div id="ceduc-prog"></div>
+        <div class="color-legend" id="ceduc-prog-legend"></div>
+        <div class="ceduc-detail" id="ceduc-prog-detail"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <footer id="footer" style="display:none">ESCON / SAED · TCDF · Dashboard gerado a partir da planilha de gestão 2026</footer>
@@ -308,7 +428,7 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
 // ══════════════════════════════════════
 //  CARREGAMENTO AUTOMÁTICO DO SHAREPOINT
 // ══════════════════════════════════════
-const SHAREPOINT_URL = 'https://raw.githubusercontent.com/silvionascimentobh-lab/SAED-Dashboard/main/planilhao.xlsx';
+const SHAREPOINT_URL = 'https://raw.githubusercontent.com/silvionascimentobh-lab/SAED-Dashboard/main/planilhao.xlsm';
 const errBox = document.getElementById('upload-error');
 
 function showError(msg) {
@@ -346,7 +466,7 @@ window.addEventListener('load', loadFromSharePoint);
 // ══════════════════════════════════════
 function processFile(file) {
   if (!file) return;
-  if (!file.name.match(/\.xls[xm]?$/i)) { showError('Por favor, selecione um arquivo .xlsx ou .xlsm válido.'); return; }
+  if (!file.name.match(/\.xlsx?$/i)) { showError('Por favor, selecione um arquivo .xlsx válido.'); return; }
   const reader = new FileReader();
   reader.onload = function(e) { processBuffer(e.target.result, file.name); };
   reader.readAsArrayBuffer(file);
@@ -355,7 +475,7 @@ function processFile(file) {
 function processBuffer(buffer, sourceName) {
   try {
       const wb = XLSX.read(buffer, { type: 'array', cellDates: true });
-      const required = ['Dashboard 2026', 'Dashboard GECC 2026', 'GECC 2026', 'Ações InCompany', 'Dashboard Maratonas'];
+      const required = ['Dashboard 2026', 'Dashboard GECC 2026', 'GECC 2026', 'Ações InCompany', 'Dashboard Maratonas', 'Planejamento 2026'];
       for (const r of required) {
         if (!wb.SheetNames.includes(r)) {
           showError(`Aba "${r}" não encontrada. Verifique se o arquivo correto foi selecionado.`);
@@ -367,15 +487,18 @@ function processBuffer(buffer, sourceName) {
       const rGeccRaw   = parseSheet(wb, 'GECC 2026');
       const rInComp    = parseSheet(wb, 'Ações InCompany');
       const rMaratonas = parseSheet(wb, 'Dashboard Maratonas');
+      const rPlano     = parseSheet(wb, 'Planejamento 2026');
 
       const data2026   = extractDash2026(rDash);
       const dataGecc   = extractDashGecc(rGecc);
       const acoes      = extractAcoes(rInComp);
       const geccCursos = extractGeccCursos(rGeccRaw);
+      const ceducData  = extractCeduc(rPlano, rInComp);
 
       renderDash2026(data2026, acoes);
       renderDashGecc(dataGecc, geccCursos);
       renderMaratonas(rMaratonas);
+      renderCeduc(ceducData);
 
       document.getElementById('file-info').textContent =
         `📁 ${sourceName}  ·  atualizado em ${new Date().toLocaleString('pt-BR')}`;
@@ -899,6 +1022,385 @@ function renderMaratonas(rows) {
       <td><span class="tag" style="background:${t.bg};color:${t.fg}">${str(r[5])}</span></td>
     </tr>`;
   }).join('');
+}
+
+
+// ══════════════════════════════════════
+//  EXTRAÇÃO E LÓGICA — EXECUÇÃO DO PLANO
+//  Recalcula em JS as situações (SheetJS não calcula fórmulas)
+//  Planejamento 2026: cabeçalho [3], dados [4+]
+//  [0]=ID [1]=TrimPlan [2]=Programa [3]=Ação [4]=Origem
+//  [5]=Patrocinador [6]=Público [7]=Status [8]=Motivo [9]=ID Execução
+// ══════════════════════════════════════
+function trimDeData(d) {
+  if (!d) return '';
+  const m = new Date(d).getMonth() + 1;
+  return m <= 3 ? '1º' : m <= 6 ? '2º' : m <= 9 ? '3º' : '4º';
+}
+
+// ══════════════════════════════════════
+//  ACOMPANHAMENTO CEDUC — nova arquitetura
+//  Dicotomia visual: ADERENTE (verde vivo) vs NÃO-ADERENTES (tons pastéis)
+//  Situação recalculada em JS (SheetJS não calcula fórmulas)
+// ══════════════════════════════════════
+const CEDUC_COR  = { aderente:'#1a8a5a', fora:'#c9a8e8', adiado:'#f6ce8a', cancelado:'#f0a8a0', pendente:'#c9cfda' };
+const CEDUC_TXT  = { aderente:'#ffffff', fora:'#5b2d8e', adiado:'#8a5a00', cancelado:'#8e2a1f', pendente:'#4a5568' };
+const CEDUC_NOME = { aderente:'Aderente', fora:'Fora do Plano', adiado:'Adiado', cancelado:'Cancelado', pendente:'Pendente' };
+const CEDUC_CATS = ['aderente','fora','adiado','cancelado','pendente'];
+let _ceduc = null;
+let _ceducProgTri = 'Ano';
+let _ceducSel = { comp:null, cursos:null, prog:null };
+
+function coreProg(p) {
+  return str(p).replace(/^Programa d[ae] /i,'').replace(/^Programa /i,'').split(',')[0].trim();
+}
+
+function extractCeduc(rPlano, rInComp) {
+  const execs = [];
+  for (let i = 1; i < rInComp.length; i++) {
+    const r = rInComp[i];
+    if (!r || r[1] != 2026 || !r[0]) continue;
+    execs.push({ id:str(r[0]), status:str(r[2]).trim(), curso:str(r[4]), programa:str(r[6]),
+                 data:str(r[7]), trim:trimDeData(r[8]), w:str(r[22]) });
+  }
+  const byPlan = {};
+  execs.forEach(e => { if (e.w && e.w !== 'FORA DO PLANO' && !byPlan[e.w]) byPlan[e.w] = e; });
+  const fora     = execs.filter(e => e.w === 'FORA DO PLANO');
+  const semClass = execs.filter(e => !e.w);
+
+  const itens = [];
+  const programas = [];
+  for (let i = 4; i < rPlano.length; i++) {
+    const r = rPlano[i];
+    if (!r || !r[0]) continue;
+    const it = { id:str(r[0]), trimPlan:str(r[1]), programa:str(r[2]), acao:str(r[3]),
+                 origem:str(r[4]), publico:str(r[6]), exec:null };
+    if (it.programa && !programas.includes(it.programa)) programas.push(it.programa);
+    const e = byPlan[it.id];
+    if (!e)                          { it.situacao = 'Planejado';            it.cat = 'pendente'; }
+    else {
+      it.exec = e;
+      if (e.status === 'Cancelado')  { it.situacao = 'Cancelado';            it.cat = 'cancelado'; }
+      else if (!e.trim)              { it.situacao = 'Adiado (a definir)';   it.cat = 'adiado'; }
+      else if (e.trim === it.trimPlan){ it.situacao = 'Aderente';            it.cat = 'aderente'; }
+      else { it.situacao = `Adiado para o ${e.trim} trimestre`;              it.cat = 'adiado'; }
+    }
+    itens.push(it);
+  }
+  return { itens, fora, semClass, execs, programas };
+}
+
+function ceducFiltra(periodo, cat, programa) {
+  const d = _ceduc;
+  if (cat === 'fora') {
+    let l = d.fora;
+    if (periodo && periodo !== 'Ano') l = l.filter(e => e.trim === periodo);
+    if (programa) { const c = coreProg(programa).toLowerCase(); l = l.filter(e => e.programa.toLowerCase().includes(c)); }
+    return { tipo:'exec', items:l };
+  }
+  let l = d.itens.filter(it => it.cat === cat);
+  if (periodo && periodo !== 'Ano') l = l.filter(it => it.trimPlan === periodo);
+  if (programa) l = l.filter(it => it.programa === programa);
+  return { tipo:'plan', items:l };
+}
+
+function ceducDetailHTML(titulo, res, cor, txtCor) {
+  if (!res.items.length) return `<div class="cd-title">${titulo}</div><div class="list-empty">Nenhum curso nesta categoria.</div>`;
+  const tagBg = cor, tagFg = txtCor === '#ffffff' ? '#0e6b43' : txtCor;
+  const cards = res.items.map((x, i) => {
+    if (res.tipo === 'exec') {
+      return `<div class="cd-item" style="--item-cor:${cor};animation-delay:${i*.03}s">
+        <div class="cd-main"><div class="cd-nome">${x.curso}</div>
+        <div class="cd-meta">${x.programa ? x.programa + ' · ' : ''}${x.data || 'sem data'}</div></div>
+        <span class="cd-tag" style="background:${tagBg}33;color:${tagFg}">${x.status}</span></div>`;
+    }
+    const execInfo = x.exec ? `<br>→ ${x.exec.curso}${x.exec.data ? ' · ' + x.exec.data : ''}` : '';
+    return `<div class="cd-item" style="--item-cor:${cor};animation-delay:${i*.03}s">
+      <div class="cd-main"><div class="cd-nome">${x.acao}</div>
+      <div class="cd-meta">${coreProg(x.programa)} · ${x.origem || '—'} · Planejado: ${x.trimPlan} tri${execInfo}</div></div>
+      <span class="cd-tag" style="background:${tagBg}33;color:${tagFg}">${x.situacao}</span></div>`;
+  }).join('');
+  return `<div class="cd-title">${titulo} (${res.items.length})</div>${cards}`;
+}
+
+function ceducToggle(painel, chave, titulo, res, cat) {
+  const el = document.getElementById(`ceduc-${painel}-detail`);
+  document.querySelectorAll(`#ceduc-${painel} .stk-seg, #ceduc-${painel} .bar-clickseg`).forEach(s => s.classList.remove('sel'));
+  if (_ceducSel[painel] === chave) { _ceducSel[painel] = null; el.classList.remove('open'); return; }
+  _ceducSel[painel] = chave;
+  el.innerHTML = ceducDetailHTML(titulo, res, CEDUC_COR[cat] || '#0a2a5e', CEDUC_TXT[cat] || '#0a2a5e');
+  el.classList.add('open');
+  const seg = document.querySelector(`#ceduc-${painel} [data-ck="${chave}"]`);
+  if (seg) seg.classList.add('sel');
+}
+
+function ceducClickComp(periodo, cat) {
+  const res = ceducFiltra(periodo, cat, null);
+  const lbl = periodo === 'Ano' ? 'Ano 2026' : periodo + ' trimestre';
+  ceducToggle('comp', periodo + '|' + cat, `${CEDUC_NOME[cat]} — ${lbl}`, res, cat);
+}
+function ceducClickCurso(idx) {
+  const g = _ceducCursoGrupos[idx];
+  const el = document.getElementById('ceduc-cursos-detail');
+  document.querySelectorAll('#ceduc-cursos .bar-clickseg').forEach(s => s.classList.remove('sel'));
+  if (_ceducSel.cursos === 'g'+idx) { _ceducSel.cursos = null; el.classList.remove('open'); return; }
+  _ceducSel.cursos = 'g'+idx;
+  el.innerHTML = ceducDetailHTML(`Cursos — ${g.nome}`, { tipo:'exec', items:g.items }, '#2e72d2', '#1a4a9a');
+  el.classList.add('open');
+  const seg = document.querySelector(`#ceduc-cursos [data-ck="g${idx}"]`);
+  if (seg) seg.classList.add('sel');
+}
+function ceducClickProg(progIdx, cat) {
+  const programa = progIdx < 0 ? null : _ceduc.programas[progIdx];
+  const res = ceducFiltra(_ceducProgTri, cat, programa);
+  const lbl = _ceducProgTri === 'Ano' ? 'Ano 2026' : _ceducProgTri + ' tri';
+  ceducToggle('prog', progIdx + '|' + cat, `${CEDUC_NOME[cat]} — ${programa ? coreProg(programa) : 'Todos'} · ${lbl}`, res, cat);
+}
+
+// ── construção das barras empilhadas: aderente | GAP | não-aderentes ──
+function ceducSegs(counts, base, maxTot, ckPrefix, onclickStr) {
+  let html = '';
+  CEDUC_CATS.forEach((cat) => {
+    const n = counts[cat] || 0;
+    if (!n || !base) return;
+    const pct = n / base * 100;
+    const w = pct / maxTot * 100;
+    const showLbl = w >= 6 ? Math.round(pct) + '%' : '';
+    if (cat !== 'aderente' && html && !html.includes('stk-gap') && (counts.aderente||0) > 0) {
+      html += `<div class="stk-gap"></div>`;
+    }
+    html += `<div class="stk-seg" data-ck="${ckPrefix}|${cat}" style="--w:${w.toFixed(2)}%;width:0;background:${CEDUC_COR[cat]};color:${CEDUC_TXT[cat]}"
+      onmousemove="ceducTip(event,'${cat}',${n},${pct.toFixed(1)})" onmouseleave="ceducTipHide()"
+      onclick="${onclickStr}'${cat}')">${showLbl}</div>`;
+  });
+  return html;
+}
+function ceducBadge(pctAder) {
+  return `<div class="stk-badge" title="Aderência">${Math.round(pctAder)}%</div>`;
+}function ceducAxis(maxTot) {
+  let ticks = '';
+  for (let v = 0; v <= maxTot + 0.01; v += 25) {
+    const left = v / maxTot * 100;
+    const cem = Math.abs(v - 100) < 0.01;
+    ticks += `<div class="ax-tick${cem ? ' ax-cem' : ''}" style="left:${left.toFixed(2)}%"><span>${Math.round(v)}%</span></div>`;
+  }
+  return `<div class="stk-row stk-axis-row">
+    <div class="stk-label"></div>
+    <div class="stk-axis">${ticks}</div>
+    <div class="stk-total"></div>
+  </div>`;
+}
+
+function ceducMark(maxTot) {
+  return `<div class="stk-mark" style="left:${(100/maxTot*100).toFixed(2)}%"></div>`;
+}
+
+// ── tooltip flutuante ──
+function ceducTip(ev, cat, n, pct) {
+  const tip = document.getElementById('ceduc-tip');
+  if (!tip) return;
+  tip.innerHTML = `<span class="tip-dot" style="background:${CEDUC_COR[cat]}"></span><b>${CEDUC_NOME[cat]}</b><span class="tip-num">${n} ação(ões) · ${Math.round(pct)}%</span>`;
+  tip.classList.add('show');
+  const pad = 14;
+  let x = ev.clientX + pad, y = ev.clientY + pad;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  if (x + w > window.innerWidth - 8) x = ev.clientX - w - pad;
+  if (y + h > window.innerHeight - 8) y = ev.clientY - h - pad;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function ceducTipHide() {
+  const tip = document.getElementById('ceduc-tip');
+  if (tip) tip.classList.remove('show');
+}
+
+// ── medidor radial (gauge) de aderência ──
+function ceducGauge(pct) {
+  const R = 52, C = 2 * Math.PI * R, frac = Math.max(0, Math.min(1, pct/100));
+  const off = C * (1 - frac);
+  return `<svg viewBox="0 0 140 140" class="gauge-svg">
+    <circle cx="70" cy="70" r="${R}" class="gauge-bg"/>
+    <circle cx="70" cy="70" r="${R}" class="gauge-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${C.toFixed(1)}"
+      style="--final-off:${off.toFixed(1)}"/>
+    <text x="70" y="64" class="gauge-val">${Math.round(pct)}%</text>
+    <text x="70" y="86" class="gauge-cap">aderência</text>
+  </svg>`;
+}
+
+// ── grade de fundo + régua (compartilhada) ──
+function ceducGrid(maxTot) {
+  let lines = '';
+  for (let v = 0; v <= maxTot + 0.01; v += 25) {
+    const left = v / maxTot * 100;
+    const cem = Math.abs(v - 100) < 0.01;
+    lines += `<div class="grid-line${cem ? ' grid-cem' : ''}" style="left:${left.toFixed(2)}%"></div>`;
+  }
+  return `<div class="stk-grid">${lines}</div>`;
+}
+
+function ceducCounts(periodo, programa) {
+  const counts = {};
+  CEDUC_CATS.forEach(cat => counts[cat] = ceducFiltra(periodo, cat, programa).items.length);
+  return counts;
+}
+
+function ceducLegenda() {
+  const naoAder = ['fora','adiado','cancelado','pendente'].map(c =>
+    `<span><span class="cl-dot" style="background:${CEDUC_COR[c]};border:1px solid ${CEDUC_TXT[c]}55"></span>${CEDUC_NOME[c]}</span>`).join('');
+  return `<div class="leg-groups">
+    <div class="leg-group leg-ader"><span class="leg-gtitle">✓ ADERENTES</span>
+      <span><span class="cl-dot" style="background:${CEDUC_COR.aderente}"></span>Dentro do trimestre planejado</span></div>
+    <div class="leg-group leg-nao"><span class="leg-gtitle">NÃO-ADERENTES</span>${naoAder}</div>
+  </div>`;
+}
+
+function renderCeduc(d) {
+  _ceduc = d;
+
+  const alertEl = document.getElementById('ceduc-alert');
+  alertEl.innerHTML = d.semClass.length
+    ? `<div class="ceduc-alert">⚠ ${d.semClass.length} curso(s) de 2026 sem classificação na coluna W da planilha (ID do plano ou FORA DO PLANO).</div>`
+    : '';
+
+  const tot = d.itens.length;
+  const nAd = d.itens.filter(i=>i.cat==='aderente').length;
+  const nNao = tot - nAd;
+  document.getElementById('kpi-ceduc').innerHTML =
+    kpiHTML('#0a2a5e', tot,           'Ações Planejadas') +
+    kpiHTML('#1a8a5a', tot?Math.round(nAd/tot*100)+'%':'—', 'Aderência') +
+    kpiHTML('#1a8a5a', nAd,           'Aderentes') +
+    kpiHTML('#8a93a8', nNao,          'Não-Aderentes') +
+    kpiHTML('#6a1fac', d.fora.length, 'Fora do Plano') +
+    kpiHTML('#e8a020', d.semClass.length, 'Sem Classificação');
+
+  const adPct = tot ? Math.round(nAd/tot*100) : 0;
+  document.getElementById('ceduc-gauge').innerHTML = ceducGauge(adPct);
+
+  document.getElementById('ceduc-comp-legend').innerHTML = ceducLegenda();
+  document.getElementById('ceduc-prog-legend').innerHTML = ceducLegenda();
+
+  renderCeducComp();
+  renderCeducCursos();
+
+  const tabs = ['1º','2º','3º','4º','Ano'];
+  document.getElementById('ceduc-prog-tabs').innerHTML = tabs.map(t =>
+    `<button class="list-tab${t===_ceducProgTri?' active-t':''}" onclick="ceducTri('${t}',this)">${t==='Ano'?'Ano 2026':t+' Tri'}</button>`).join('');
+  renderCeducProg();
+}
+
+function ceducAnima(containerId) {
+  requestAnimationFrame(() => {
+    document.querySelectorAll(`#${containerId} .stk-seg`).forEach(s => {
+      const w = s.style.getPropertyValue('--w');
+      if (w) s.style.width = w;
+    });
+    document.querySelectorAll(`#${containerId} .gauge-fg`).forEach(c => {
+      c.style.strokeDashoffset = c.style.getPropertyValue('--final-off');
+    });
+  });
+}
+function renderCeducComp() {
+  const periodos = ['1º','2º','3º','4º','Ano'];
+  const dados = periodos.map(p => {
+    const base = p==='Ano' ? _ceduc.itens.length : _ceduc.itens.filter(i=>i.trimPlan===p).length;
+    return { p, base, counts: ceducCounts(p, null) };
+  }).filter(x => x.base > 0 || x.counts.fora > 0);
+
+  let maxTot = 100;
+  dados.forEach(x => {
+    if (!x.base) return;
+    const tot = CEDUC_CATS.reduce((s,c)=>s+(x.counts[c]||0),0) / x.base * 100;
+    if (tot > maxTot) maxTot = tot;
+  });
+  maxTot = Math.ceil(maxTot / 25) * 25;
+
+  document.getElementById('ceduc-comp').innerHTML = dados.map(x => {
+    const lbl = x.p==='Ano'?'Ano 2026':x.p+' Tri';
+    if (!x.base) {
+      const n = x.counts.fora;
+      return `<div class="stk-row"><div class="stk-label">${lbl}</div>
+        <div class="stk-track">${ceducMark(maxTot)}<div class="stk-seg" data-ck="${x.p}|fora" style="width:${Math.min(n*6,40)}%;background:${CEDUC_COR.fora};color:${CEDUC_TXT.fora}"
+        title="Fora do Plano: ${n}" onclick="ceducClickComp('${x.p}','fora')">${n} fora</div></div>
+        <div class="stk-total">0</div></div>`;
+    }
+    const aderPct = x.base ? (x.counts.aderente||0)/x.base*100 : 0;
+    return `<div class="stk-row">
+      <div class="stk-label">${lbl}</div>
+      <div class="stk-track">${ceducGrid(maxTot)}${ceducMark(maxTot)}${ceducSegs(x.counts, x.base, maxTot, x.p, `ceducClickComp('${x.p}',`)}</div>
+      <div class="stk-total">${x.base}</div>
+      ${ceducBadge(aderPct)}
+    </div>`;
+  }).join('') + ceducAxis(maxTot);
+  ceducAnima('ceduc-comp');
+}
+
+let _ceducCursoGrupos = [];
+function renderCeducCursos() {
+  const validos = _ceduc.execs.filter(e => e.status !== 'Cancelado');
+  const porProg = {};
+  validos.forEach(e => {
+    const k = e.programa || '(Sem programa)';
+    if (!porProg[k]) porProg[k] = [];
+    porProg[k].push(e);
+  });
+  _ceducCursoGrupos = [{ nome:'TOTAL', items:validos }]
+    .concat(Object.entries(porProg).sort((a,b)=>b[1].length-a[1].length).map(([nome,items])=>({nome,items})));
+
+  const max = Math.max(..._ceducCursoGrupos.map(g=>g.items.length), 1);
+  document.getElementById('ceduc-cursos').innerHTML = _ceducCursoGrupos.map((g,i) => `
+    <div class="bar-row" style="animation-delay:${i*.04}s">
+      <div class="bar-label" style="width:230px" title="${g.nome}">${g.nome}</div>
+      <div class="bar-track"><div class="bar-fill bar-clickseg" data-ck="g${i}" style="width:${(g.items.length/max*100).toFixed(1)}%;--bar-color:${i===0?'#0a2a5e':'#2e72d2'};cursor:pointer"
+        onclick="ceducClickCurso(${i})"></div></div>
+      <div class="bar-val">${g.items.length}</div>
+    </div>`).join('');
+}
+
+function ceducTri(t, btn) {
+  _ceducProgTri = t;
+  document.querySelectorAll('#ceduc-prog-tabs .list-tab').forEach(b => b.className='list-tab');
+  btn.classList.add('active-t');
+  _ceducSel.prog = null;
+  document.getElementById('ceduc-prog-detail').classList.remove('open');
+  renderCeducProg();
+}
+
+function renderCeducProg() {
+  const t = _ceducProgTri;
+  const dados = _ceduc.programas.map((p, idx) => {
+    const base = _ceduc.itens.filter(i => i.programa===p && (t==='Ano' || i.trimPlan===t)).length;
+    return { p, idx, base, counts: ceducCounts(t, p) };
+  }).filter(x => x.base > 0 || (x.counts.fora||0) > 0);
+
+  if (!dados.length) {
+    document.getElementById('ceduc-prog').innerHTML = '<div class="list-empty">Nenhum programa com ações neste período.</div>';
+    return;
+  }
+  let maxTot = 100;
+  dados.forEach(x => {
+    if (!x.base) return;
+    const tot = CEDUC_CATS.reduce((s,c)=>s+(x.counts[c]||0),0) / x.base * 100;
+    if (tot > maxTot) maxTot = tot;
+  });
+  maxTot = Math.ceil(maxTot / 25) * 25;
+
+  document.getElementById('ceduc-prog').innerHTML = dados.map(x => {
+    const label = coreProg(x.p);
+    if (!x.base) {
+      const n = x.counts.fora;
+      return `<div class="stk-row"><div class="stk-label" title="${label}">${label}</div>
+        <div class="stk-track">${ceducMark(maxTot)}<div class="stk-seg" data-ck="${x.idx}|fora" style="width:${Math.min(n*8,40)}%;background:${CEDUC_COR.fora};color:${CEDUC_TXT.fora}"
+        title="Fora do Plano: ${n}" onclick="ceducClickProg(${x.idx},'fora')">${n} fora</div></div>
+        <div class="stk-total">0</div></div>`;
+    }
+    const aderPct = x.base ? (x.counts.aderente||0)/x.base*100 : 0;
+    return `<div class="stk-row">
+      <div class="stk-label" title="${label}">${label}</div>
+      <div class="stk-track">${ceducGrid(maxTot)}${ceducMark(maxTot)}${ceducSegs(x.counts, x.base, maxTot, String(x.idx), `ceducClickProg(${x.idx},`)}</div>
+      <div class="stk-total">${x.base}</div>
+      ${ceducBadge(aderPct)}
+    </div>`;
+  }).join('') + ceducAxis(maxTot);
+  ceducAnima('ceduc-prog');
 }
 
 function switchTab(id, btn) {
