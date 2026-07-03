@@ -207,8 +207,8 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
     <div class="upload-error" id="upload-error"></div>
     <div id="manual-fallback" style="display:none;margin-top:1.5rem">
       <div style="font-size:.78rem;color:var(--texto-sub);margin-bottom:1rem">Ou carregue manualmente:</div>
-      <label class="upload-btn" for="file-input">Selecionar arquivo .xlsx</label>
-      <input type="file" id="file-input" accept=".xlsx,.xls" style="display:none">
+      <label class="upload-btn" for="file-input">Selecionar arquivo .xlsm</label>
+      <input type="file" id="file-input" accept=".xlsx,.xlsm,.xls" style="display:none">
     </div>
   </div>
 </div>
@@ -329,7 +329,7 @@ function resetUpload() {
 
 async function loadFromSharePoint() {
   try {
-    const response = await fetch(SHAREPOINT_URL);
+    const response = await fetch(SHAREPOINT_URL + '?t=' + Date.now(), { cache: 'no-store' });
     if (!response.ok) throw new Error('Erro ao acessar o SharePoint (status ' + response.status + ')');
     const buffer = await response.arrayBuffer();
     processBuffer(buffer, 'SharePoint');
@@ -346,7 +346,7 @@ window.addEventListener('load', loadFromSharePoint);
 // ══════════════════════════════════════
 function processFile(file) {
   if (!file) return;
-  if (!file.name.match(/\.xlsx?$/i)) { showError('Por favor, selecione um arquivo .xlsx válido.'); return; }
+  if (!file.name.match(/\.(xlsx|xlsm|xls)$/i)) { showError('Por favor, selecione um arquivo .xlsm ou .xlsx válido.'); return; }
   const reader = new FileReader();
   reader.onload = function(e) { processBuffer(e.target.result, file.name); };
   reader.readAsArrayBuffer(file);
