@@ -176,6 +176,88 @@ tbody td{padding:.52rem .45rem;}
 .pub-status-tag{font-size:.65rem;font-weight:700;padding:.12rem .45rem;border-radius:99px;}
 .pub-list-empty{padding:.75rem;font-size:.78rem;color:var(--texto-sub);}
 
+
+/* ═══════════════════════════════════════════
+   v2.0 — COMPONENTES NOVOS E REFINO VISUAL
+   ═══════════════════════════════════════════ */
+
+/* Refino de base */
+body{background:var(--cinza-bg);-webkit-font-smoothing:antialiased;}
+.card{border-radius:12px;box-shadow:0 1px 3px rgba(20,40,80,.05);transition:box-shadow .2s;}
+.card:hover{box-shadow:0 4px 14px rgba(20,40,80,.08);}
+.card-header{padding:.78rem 1.25rem;letter-spacing:.08em;font-size:.7rem;}
+.kpi{border-radius:12px;box-shadow:0 1px 3px rgba(20,40,80,.05);}
+.kpi-value{font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
+.panel-title{letter-spacing:-.01em;}
+.hint{padding:.9rem 1rem;font-size:.78rem;color:var(--texto-sub);background:var(--cinza-bg);border-radius:9px;text-align:center;}
+
+/* ── CARD DE AÇÃO (padrão único em todo o dashboard) ── */
+.acao-list{display:flex;flex-direction:column;gap:.45rem;max-height:460px;overflow-y:auto;padding-right:.35rem;margin-top:.65rem;}
+.acao-list::-webkit-scrollbar{width:5px;}
+.acao-list::-webkit-scrollbar-thumb{background:var(--borda);border-radius:99px;}
+.acao-item{padding:.65rem .85rem;background:#fff;border:1px solid var(--borda);border-left:3px solid var(--st,var(--borda));border-radius:9px;animation:fadeIn .25s ease both;transition:box-shadow .15s;}
+.acao-item:hover{box-shadow:0 2px 10px rgba(20,40,80,.08);}
+.acao-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.35rem;}
+.acao-nome{font-size:.83rem;font-weight:600;line-height:1.35;flex:1;}
+.acao-status{font-size:.64rem;font-weight:700;padding:.16rem .55rem;border-radius:99px;white-space:nowrap;flex-shrink:0;}
+.acao-meta{display:flex;flex-wrap:wrap;gap:.3rem .8rem;font-size:.71rem;color:var(--texto-sub);}
+.acao-proc{font-variant-numeric:tabular-nums;font-weight:600;color:var(--azul-med);background:#eef3fc;padding:.05rem .4rem;border-radius:4px;}
+.acao-instr{max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ── PAINEL DE TRIMESTRE ── */
+.trim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.7rem;}
+.trim-card{position:relative;background:#fff;border:1.5px solid var(--borda);border-radius:11px;padding:.9rem .8rem;cursor:pointer;text-align:center;font-family:'DM Sans',sans-serif;transition:border-color .18s,box-shadow .18s,transform .18s;}
+.trim-card:hover{border-color:var(--azul-claro);transform:translateY(-2px);box-shadow:0 4px 14px rgba(20,40,80,.09);}
+.trim-card.sel{border-color:var(--azul);background:#f5f9ff;box-shadow:0 0 0 2px rgba(10,42,94,.09);}
+.trim-num{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:var(--azul);line-height:1;}
+.trim-lbl{font-size:.71rem;color:var(--texto-sub);margin-top:.28rem;font-weight:500;}
+.trim-mini{display:flex;justify-content:center;gap:.25rem;margin-top:.5rem;}
+.trim-mini-dot{width:7px;height:7px;border-radius:50%;}
+
+.drill{margin-top:1rem;padding-top:.9rem;border-top:1px dashed var(--borda);}
+.drill-head{font-size:.78rem;color:var(--texto-sub);margin-bottom:.7rem;}
+.drill-head strong{color:var(--azul);font-family:'Syne',sans-serif;}
+.pub-bars{display:flex;flex-direction:column;gap:.4rem;}
+.pub-bar{display:flex;align-items:center;gap:.7rem;width:100%;padding:.45rem .6rem;background:transparent;border:1.5px solid transparent;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;transition:background .15s,border-color .15s;}
+.pub-bar:hover{background:#f5f9ff;}
+.pub-bar.sel{background:#eef4ff;border-color:var(--azul-claro);}
+.pub-bar-lbl{width:160px;min-width:160px;font-size:.78rem;font-weight:600;color:var(--texto);}
+.pub-bar-track{flex:1;height:10px;background:#e9eefb;border-radius:99px;overflow:hidden;}
+.pub-bar-fill{display:block;height:100%;border-radius:99px;transition:width .5s cubic-bezier(.22,1,.36,1);}
+.pub-bar-val{width:34px;text-align:right;font-size:.8rem;font-weight:700;color:var(--azul);font-variant-numeric:tabular-nums;}
+.drill-lista{margin-top:.5rem;}
+
+/* ── VISÃO MENSAL ── */
+.mes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:.45rem;}
+.mes-chip{display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.55rem .3rem;background:#fff;border:1.5px solid var(--borda);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .15s,background .15s,transform .15s;}
+.mes-chip:hover{border-color:var(--azul-claro);transform:translateY(-1px);}
+.mes-chip.sel{background:var(--azul);border-color:var(--azul);}
+.mes-chip.sel .mes-ab,.mes-chip.sel .mes-qt{color:#fff;}
+.mes-ab{font-size:.72rem;font-weight:700;color:var(--texto);letter-spacing:.03em;}
+.mes-qt{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:var(--azul);line-height:1;}
+
+.st-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem;padding-top:.9rem;border-top:1px dashed var(--borda);}
+.st-chip{display:flex;align-items:center;gap:.4rem;padding:.35rem .8rem;background:#fff;border:1.5px solid var(--borda);border-radius:99px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:600;color:var(--texto-sub);transition:all .15s;}
+.st-chip:hover{border-color:var(--st,var(--azul-claro));color:var(--texto);}
+.st-chip.sel{border-color:var(--st,var(--azul));background:#f5f9ff;color:var(--texto);box-shadow:0 0 0 1px var(--st,var(--azul)) inset;}
+.st-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.st-n{font-weight:800;color:var(--azul);font-variant-numeric:tabular-nums;}
+.mes-head{margin-top:.9rem;font-size:.78rem;color:var(--texto-sub);}
+
+/* Tabelas — leitura mais confortável */
+thead th{padding:.5rem .5rem;color:var(--azul);border-bottom:1.5px solid var(--borda);}
+tbody td{padding:.56rem .5rem;}
+tbody tr:hover{background:#f7faff;}
+.gecc-course-item{border-left-width:3px;}
+
+@media(max-width:600px){
+  .trim-grid{grid-template-columns:repeat(2,1fr);}
+  .mes-grid{grid-template-columns:repeat(4,1fr);}
+  .pub-bar-lbl{width:100px;min-width:100px;font-size:.72rem;}
+  .acao-instr{max-width:150px;}
+  .acao-top{flex-direction:column;gap:.3rem;}
+}
+
 footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);border-top:1px solid var(--borda);margin-top:1rem;}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @media(max-width:600px){
@@ -243,8 +325,8 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
     <div class="card">
       <div class="card-header">📅 Ações por Trimestre</div>
       <div class="card-body">
-        <div class="list-tabs" id="trim-tabs"></div>
-        <div id="list-trimestre"></div>
+        <div id="trim-cards"></div>
+        <div id="trim-drill"></div>
       </div>
     </div>
     <div class="card" style="margin-bottom:1.25rem">
@@ -256,14 +338,12 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
         </tr></thead><tbody id="prog-tbody"></tbody></table>
       </div>
     </div>
-    <div class="section-grid" style="margin-bottom:1.25rem">
-      <div class="card">
-        <div class="card-header">✅ Cursos Realizados</div>
-        <div class="card-body"><div id="list-realizados"></div></div>
-      </div>
-      <div class="card">
-        <div class="card-header">🔜 Cursos a Realizar</div>
-        <div class="card-body"><div id="list-arealizar"></div></div>
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-header">🗓️ Ações Mês a Mês</div>
+      <div class="card-body">
+        <div id="mes-chips"></div>
+        <div id="mes-status"></div>
+        <div id="mes-lista"></div>
       </div>
     </div>
   </div>
@@ -435,11 +515,80 @@ function extractDash2026(rows) {
 //  [7]=Data TXT  [8]=Início(Date)  [9]=Término
 //  [10]=Modalidade  [19]=Instrutor
 // ══════════════════════════════════════
-function trimestre(dateVal) {
-  if (!dateVal) return '';
-  const m = new Date(dateVal).getMonth() + 1;
-  return m <= 3 ? '1º' : m <= 6 ? '2º' : m <= 9 ? '3º' : '4º';
+// ── PARSING ROBUSTO DE DATAS ──────────────────────────────
+// Fonte única de verdade: converte qualquer formato da planilha
+// (objeto Date, serial Excel, ou texto dd/mm/aaaa) em {ano, mes, dia}.
+// Evita o bug de new Date('01/07/2026') ser lido como MM/DD (jan/7).
+function parseData(v) {
+  if (v === null || v === undefined || v === '') return null;
+
+  // 1) Objeto Date vindo do SheetJS (cellDates:true) — usar UTC, sem timezone
+  if (v instanceof Date && !isNaN(v)) {
+    return { ano: v.getUTCFullYear(), mes: v.getUTCMonth() + 1, dia: v.getUTCDate() };
+  }
+
+  // 2) Número serial do Excel (dias desde 30/12/1899)
+  if (typeof v === 'number' && isFinite(v) && v > 0) {
+    const d = new Date(Date.UTC(1899, 11, 30) + v * 86400000);
+    return { ano: d.getUTCFullYear(), mes: d.getUTCMonth() + 1, dia: d.getUTCDate() };
+  }
+
+  // 3) Texto — assume padrão brasileiro dd/mm/aaaa (ou dd-mm-aaaa)
+  const s = String(v).trim();
+  if (!s) return null;
+  let m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  if (m) {
+    let [, dia, mes, ano] = m.map(Number);
+    if (ano < 100) ano += 2000;
+    if (mes >= 1 && mes <= 12 && dia >= 1 && dia <= 31) return { ano, mes, dia };
+  }
+  // 4) Texto ISO aaaa-mm-dd
+  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return { ano: +m[1], mes: +m[2], dia: +m[3] };
+
+  return null;
 }
+
+// Trimestre e mês derivam do MESMO parse → sempre coerentes entre si
+function trimestre(dateVal) {
+  const d = parseData(dateVal);
+  if (!d) return '';
+  return d.mes <= 3 ? '1º' : d.mes <= 6 ? '2º' : d.mes <= 9 ? '3º' : '4º';
+}
+function mesDe(dateVal) {
+  const d = parseData(dateVal);
+  return d ? d.mes : 0;
+}
+function anoDe(dateVal) {
+  const d = parseData(dateVal);
+  return d ? d.ano : 0;
+}
+function ordemData(dateVal) {
+  const d = parseData(dateVal);
+  return d ? d.ano * 10000 + d.mes * 100 + d.dia : 99999999;
+}
+
+const MESES_NOME = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                    'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const MESES_ABREV = ['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+// ── PADRONIZAÇÃO DE STATUS (cores do Planilhão) ────────────
+// A realizar = neutro | Em andamento = laranja | Cancelado = vermelho
+// Realizado = verde | Adiado = azul
+const STATUS_CFG = {
+  'realizado':    { key:'realizado',   label:'Realizado',    cor:'#1a8a5a', bg:'#e3f5ec', fg:'#0e6b43' },
+  'em andamento': { key:'andamento',   label:'Em andamento', cor:'#e8820a', bg:'#fdf0dd', fg:'#8a5a00' },
+  'cancelado':    { key:'cancelado',   label:'Cancelado',    cor:'#c0392b', bg:'#fbe6e4', fg:'#8e2a1f' },
+  'adiado':       { key:'adiado',      label:'Adiado',       cor:'#2e72d2', bg:'#e4eeff', fg:'#1a4a9a' },
+  'a realizar':   { key:'arealizar',   label:'A realizar',   cor:'#9aa3b5', bg:'#f0f2f6', fg:'#5a6480' }
+};
+const STATUS_NEUTRO = { key:'outro', label:'—', cor:'#9aa3b5', bg:'#f0f2f6', fg:'#5a6480' };
+function statusCfg(s) {
+  return STATUS_CFG[String(s || '').trim().toLowerCase()] || 
+         Object.assign({}, STATUS_NEUTRO, { label: String(s || '—').trim() });
+}
+// Ordem fixa de exibição dos status
+const STATUS_ORDEM = ['a realizar','em andamento','realizado','adiado','cancelado'];
 
 function extractAcoes(rows) {
   // Deduplica por ID de ação (múltiplos instrutores geram múltiplas linhas)
@@ -456,16 +605,20 @@ function extractAcoes(rows) {
       id,
       nome:     str(row[4]),
       status:   str(row[2]),
+      proc:     str(row[3]),          // ← número do processo (coluna D)
       pub:      str(row[5]),
       programa: str(row[6]),
       data:     str(row[7]),
       instr:    str(row[19]),
       trim:     trimestre(inicio),
+      mes:      mesDe(inicio),         // ← mês calculado do MESMO parse
+      ano:      anoDe(inicio),
+      ordem:    ordemData(inicio),
       inicio
     });
   }
-  // Ordenar por data de início
-  acoes.sort((a,b) => (a.inicio||0) - (b.inicio||0));
+  // Ordenar cronologicamente pela data já normalizada
+  acoes.sort((a,b) => a.ordem - b.ordem);
   return acoes;
 }
 
@@ -585,18 +738,8 @@ function renderDash2026(d, acoes) {
     </tr>`;
 
   // Listas
-  renderCourseList('list-realizados',
-    acoes.filter(a => a.status.toLowerCase() === 'realizado'), '#1a8a5a');
-  renderCourseList('list-arealizar',
-    acoes.filter(a => a.status.toLowerCase() === 'a realizar' || a.status.toLowerCase() === 'em andamento'), '#e8a020');
-
-  // Trimestres
-  const trims = [...new Set(acoes.map(a => a.trim).filter(Boolean))].sort();
-  const trimTabs = document.getElementById('trim-tabs');
-  trimTabs.innerHTML = trims.map((t,i) =>
-    `<button class="list-tab${i===0?' active-t':''}" onclick="selectTrim('${t}',this)">${t} Trim.</button>`
-  ).join('');
-  if (trims.length) renderTrimestre(trims[0], acoes);
+  renderTrimCards();
+  renderMesChips();
 }
 
 // Estado do painel de público aberto
@@ -637,69 +780,186 @@ function renderPubPanel(label, idx, filtro) {
   if (filtro === 'r') items = all.filter(a => a.status.toLowerCase() === 'realizado');
   if (filtro === 'a') items = all.filter(a => a.status.toLowerCase() !== 'realizado');
 
-  const corTag = s => s.toLowerCase() === 'realizado'
-    ? {bg:'#d4f0e5', fg:'#1a8a5a'}
-    : {bg:'#fef3cd', fg:'#92600a'};
-
   const filterBar = `<div class="pub-filter-bar">
     <button class="pub-filter ${filtro==='all'?'on-all':''}" onclick="filterPub('all',this)">Todos (${all.length})</button>
-    <button class="pub-filter ${filtro==='r'?'on-r':''}"   onclick="filterPub('r',this)">✅ Realizados (${totR})</button>
-    <button class="pub-filter ${filtro==='a'?'on-a':''}"   onclick="filterPub('a',this)">🔜 A Realizar (${totA})</button>
+    <button class="pub-filter ${filtro==='r'?'on-r':''}"   onclick="filterPub('r',this)">Realizados (${totR})</button>
+    <button class="pub-filter ${filtro==='a'?'on-a':''}"   onclick="filterPub('a',this)">Pendentes (${totA})</button>
   </div>`;
 
   if (!items.length) {
     panel.innerHTML = filterBar + '<div class="pub-list-empty">Nenhum curso encontrado.</div>';
     return;
   }
+  panel.innerHTML = filterBar + `<div class="acao-list">${items.map(acaoCard).join('')}</div>`;
+}
 
-  panel.innerHTML = filterBar + items.map((a,i) => {
-    const t = corTag(a.status);
-    return `<div class="pub-list-item" style="--item-color:${cor};animation-delay:${i*.03}s">
-      <div class="pub-item-name">${a.nome}</div>
-      <div class="pub-item-meta">
-        ${a.data  ? `<span>📅 ${a.data}</span>`  : ''}
-        ${a.instr ? `<span>🎤 ${a.instr}</span>` : ''}
-        <span class="pub-status-tag" style="background:${t.bg};color:${t.fg}">${a.status}</span>
-      </div>
-    </div>`;
+
+
+
+// ══════════════════════════════════════
+//  CARD DE AÇÃO (usado em todas as listas)
+//  Sempre exibe: nome, PROCESSO, status, data, público, instrutor
+// ══════════════════════════════════════
+function acaoCard(a, i) {
+  const s = statusCfg(a.status);
+  return `<div class="acao-item" style="--st:${s.cor};animation-delay:${(i%20)*.025}s">
+    <div class="acao-top">
+      <div class="acao-nome">${a.nome || '—'}</div>
+      <span class="acao-status" style="background:${s.bg};color:${s.fg}">${s.label}</span>
+    </div>
+    <div class="acao-meta">
+      ${a.proc ? `<span class="acao-proc" title="Processo ${a.proc}">📄 ${a.proc}</span>` : ''}
+      ${a.data ? `<span>📅 ${a.data}</span>` : ''}
+      ${a.pub  ? `<span>👥 ${a.pub}</span>`  : ''}
+      ${a.instr? `<span class="acao-instr" title="${a.instr}">🎤 ${a.instr}</span>` : ''}
+    </div>
+  </div>`;
+}
+function listaAcoes(items, vazio) {
+  if (!items.length) return `<div class="list-empty">${vazio || 'Nenhuma ação encontrada.'}</div>`;
+  return `<div class="acao-list">${items.map(acaoCard).join('')}</div>`;
+}
+
+// ══════════════════════════════════════
+//  PAINEL POR TRIMESTRE (drill-down)
+//  Trimestre → Público → Lista de ações
+// ══════════════════════════════════════
+const TRIMS = ['1º','2º','3º','4º'];
+const PUB_CORES = { 'Servidores do TCDF':'#2e72d2', 'Jurisdicionados':'#e8820a', 'Sociedade':'#1a8a5a' };
+let _trimSel = null, _pubSel = null;
+
+function publicosDe(lista) {
+  const ordem = ['Servidores do TCDF','Jurisdicionados','Sociedade'];
+  const mapa = {};
+  lista.forEach(a => { const p = a.pub || 'Não informado'; (mapa[p] = mapa[p] || []).push(a); });
+  return Object.keys(mapa)
+    .sort((x,y) => {
+      const ix = ordem.indexOf(x), iy = ordem.indexOf(y);
+      return (ix < 0 ? 99 : ix) - (iy < 0 ? 99 : iy);
+    })
+    .map(p => ({ nome:p, itens:mapa[p], cor: PUB_CORES[p] || '#8a93a8' }));
+}
+
+function renderTrimCards() {
+  const el = document.getElementById('trim-cards');
+  el.innerHTML = `<div class="trim-grid">${TRIMS.map(t => {
+    const itens = _acoes.filter(a => a.trim === t);
+    const pubs  = publicosDe(itens);
+    const ativo = _trimSel === t ? ' sel' : '';
+    const mini  = pubs.length
+      ? `<div class="trim-mini">${pubs.map(p =>
+          `<span class="trim-mini-dot" style="background:${p.cor}" title="${p.nome}: ${p.itens.length}"></span>`
+        ).join('')}</div>`
+      : '';
+    return `<button class="trim-card${ativo}" onclick="selTrim('${t}')">
+      <div class="trim-num">${itens.length}</div>
+      <div class="trim-lbl">${t} Trimestre</div>
+      ${mini}
+    </button>`;
+  }).join('')}</div>`;
+  renderTrimDrill();
+}
+
+function selTrim(t) {
+  _trimSel = (_trimSel === t) ? null : t;
+  _pubSel = null;
+  renderTrimCards();
+}
+function selPub(p) {
+  _pubSel = (_pubSel === p) ? null : p;
+  renderTrimDrill();
+}
+
+function renderTrimDrill() {
+  const el = document.getElementById('trim-drill');
+  if (!_trimSel) { el.innerHTML = '<div class="hint">Selecione um trimestre para ver a distribuição por público.</div>'; return; }
+
+  const itens = _acoes.filter(a => a.trim === _trimSel);
+  const pubs  = publicosDe(itens);
+  if (!itens.length) { el.innerHTML = `<div class="list-empty">Sem ações no ${_trimSel} trimestre.</div>`; return; }
+
+  const max = Math.max(...pubs.map(p => p.itens.length), 1);
+  const barras = pubs.map(p => {
+    const on = _pubSel === p.nome ? ' sel' : '';
+    return `<button class="pub-bar${on}" onclick="selPub('${p.nome.replace(/'/g,"\\'")}')">
+      <span class="pub-bar-lbl">${p.nome}</span>
+      <span class="pub-bar-track"><span class="pub-bar-fill" style="width:${(p.itens.length/max*100).toFixed(1)}%;background:${p.cor}"></span></span>
+      <span class="pub-bar-val">${p.itens.length}</span>
+    </button>`;
   }).join('');
+
+  const lista = _pubSel
+    ? `<div class="drill-lista">${listaAcoes(itens.filter(a => (a.pub || 'Não informado') === _pubSel))}</div>`
+    : '<div class="hint">Clique em um público para ver as ações.</div>';
+
+  el.innerHTML = `<div class="drill">
+    <div class="drill-head"><strong>${_trimSel} Trimestre</strong> · ${itens.length} ${itens.length===1?'ação':'ações'}</div>
+    <div class="pub-bars">${barras}</div>
+    ${lista}
+  </div>`;
 }
 
+// ══════════════════════════════════════
+//  VISÃO MENSAL — mês → status → lista
+// ══════════════════════════════════════
+let _mesSel = 0, _stSel = null;
 
-function renderCourseList(elId, items, cor) {
-  const el = document.getElementById(elId);
-  if (!items.length) { el.innerHTML = '<div class="list-empty">Nenhum registro encontrado.</div>'; return; }
-  el.innerHTML = `<div class="course-list">${items.map((a,i) => `
-    <div class="course-item" style="--item-color:${cor};animation-delay:${i*.04}s">
-      <div class="course-name">${a.nome}</div>
-      <div class="course-meta">
-        ${a.data  ? `<span>📅 ${a.data}</span>` : ''}
-        ${a.pub   ? `<span>👥 ${a.pub}</span>`  : ''}
-        ${a.instr ? `<span>🎤 ${a.instr}</span>` : ''}
-      </div>
-    </div>`).join('')}</div>`;
+function renderMesChips() {
+  const el = document.getElementById('mes-chips');
+  const meses = [...new Set(_acoes.map(a => a.mes).filter(Boolean))].sort((a,b)=>a-b);
+  if (!meses.length) { el.innerHTML = '<div class="list-empty">Sem datas disponíveis.</div>'; return; }
+  if (!_mesSel || !meses.includes(_mesSel)) {
+    const hoje = new Date().getMonth() + 1;
+    _mesSel = meses.includes(hoje) ? hoje : meses[0];
+  }
+  el.innerHTML = `<div class="mes-grid">${meses.map(m => {
+    const n = _acoes.filter(a => a.mes === m).length;
+    return `<button class="mes-chip${_mesSel===m?' sel':''}" onclick="selMes(${m})">
+      <span class="mes-ab">${MESES_ABREV[m]}</span><span class="mes-qt">${n}</span>
+    </button>`;
+  }).join('')}</div>`;
+  renderMesStatus();
 }
 
-function renderTrimestre(trim, acoes) {
-  const items = acoes.filter(a => a.trim === trim);
-  const el = document.getElementById('list-trimestre');
-  if (!items.length) { el.innerHTML = '<div class="list-empty">Sem ações neste trimestre.</div>'; return; }
-  const cor = s => s.toLowerCase() === 'realizado' ? '#1a8a5a' : s.toLowerCase() === 'em andamento' ? '#2e72d2' : '#e8a020';
-  el.innerHTML = `<div class="course-list">${items.map((a,i) => `
-    <div class="course-item" style="--item-color:${cor(a.status)};animation-delay:${i*.04}s">
-      <div class="course-name">${a.nome}</div>
-      <div class="course-meta">
-        <span style="color:${cor(a.status)};font-weight:600">● ${a.status}</span>
-        ${a.data  ? `<span>📅 ${a.data}</span>`  : ''}
-        ${a.instr ? `<span>🎤 ${a.instr}</span>` : ''}
-      </div>
-    </div>`).join('')}</div>`;
-}
+function selMes(m) { _mesSel = m; _stSel = null; renderMesChips(); }
+function selSt(k) { _stSel = (_stSel === k) ? null : k; renderMesStatus(); }
 
-function selectTrim(trim, btn) {
-  document.querySelectorAll('#trim-tabs .list-tab').forEach(b => b.className = 'list-tab');
-  btn.classList.add('active-t');
-  renderTrimestre(trim, _acoes);
+function renderMesStatus() {
+  const elS = document.getElementById('mes-status');
+  const elL = document.getElementById('mes-lista');
+  const itens = _acoes.filter(a => a.mes === _mesSel);
+
+  if (!itens.length) {
+    elS.innerHTML = '';
+    elL.innerHTML = `<div class="list-empty">Nenhuma ação em ${MESES_NOME[_mesSel]}.</div>`;
+    return;
+  }
+
+  // Agrupar por status na ordem definida
+  const grupos = {};
+  itens.forEach(a => {
+    const c = statusCfg(a.status);
+    (grupos[c.key] = grupos[c.key] || { cfg:c, itens:[] }).itens.push(a);
+  });
+  const chaves = STATUS_ORDEM.map(s => statusCfg(s).key).filter(k => grupos[k]);
+  Object.keys(grupos).forEach(k => { if (!chaves.includes(k)) chaves.push(k); });
+
+  elS.innerHTML = `<div class="st-row">
+    <button class="st-chip${!_stSel?' sel':''}" onclick="selSt(null)">
+      <span class="st-dot" style="background:var(--azul)"></span>Todas<span class="st-n">${itens.length}</span>
+    </button>
+    ${chaves.map(k => {
+      const g = grupos[k];
+      return `<button class="st-chip${_stSel===k?' sel':''}" onclick="selSt('${k}')"
+        style="--st:${g.cfg.cor}">
+        <span class="st-dot" style="background:${g.cfg.cor}"></span>${g.cfg.label}<span class="st-n">${g.itens.length}</span>
+      </button>`;
+    }).join('')}
+  </div>`;
+
+  const mostrar = _stSel ? grupos[_stSel].itens : itens;
+  elL.innerHTML = `<div class="mes-head">${MESES_NOME[_mesSel]} de 2026 · ${mostrar.length} ${mostrar.length===1?'ação':'ações'}</div>`
+    + listaAcoes(mostrar);
 }
 
 // ══════════════════════════════════════
@@ -707,9 +967,20 @@ function selectTrim(trim, btn) {
 // ══════════════════════════════════════
 function renderDashGecc(d, geccCursos) {
   geccCursos = geccCursos || {};
-  const inst = d.instrutores.filter(i =>
-    i.nome && !i.nome.toUpperCase().includes('TOTAL') &&
-    !i.nome.toLowerCase().includes('servidores, colabor'));
+  // Filtros: sem TOTAL, sem registros que não são pessoas, sem GECC zerado
+  const NAO_PESSOA = ['o','0','diversos','n/a','na','-','--','vários','varios','outros'];
+  const inst = d.instrutores.filter(i => {
+    if (!i.nome) return false;
+    const n = i.nome.trim();
+    const nl = n.toLowerCase();
+    if (n.toUpperCase().includes('TOTAL')) return false;
+    if (nl.includes('servidores, colabor')) return false;
+    if (NAO_PESSOA.includes(nl)) return false;      // remove "O", "Diversos", etc.
+    if (n.length <= 2) return false;                 // remove siglas/letras soltas
+    if (!/[a-zà-ú]/i.test(n)) return false;          // precisa ter letras
+    if (i.total <= 0) return false;                  // remove GECC zerado
+    return true;
+  });
   const totAula  = inst.reduce((s,i)=>s+i.aula,  0);
   const totMat   = inst.reduce((s,i)=>s+i.mat,   0);
   const totExam  = inst.reduce((s,i)=>s+i.exam,  0);
@@ -727,15 +998,13 @@ function renderDashGecc(d, geccCursos) {
   document.getElementById('gecc-tbody').innerHTML =
     inst.map((i, idx) => {
       const cursos = geccCursos[i.nome] || [];
-      const corStatus = s => s.toLowerCase()==='realizado'
-        ? {bg:'#d4f0e5',fg:'#1a8a5a'} : {bg:'#fef3cd',fg:'#92600a'};
       const detalhe = cursos.length ? cursos.map((c,ci) => {
-        const t = corStatus(c.status);
-        return `<div class="gecc-course-item" style="animation-delay:${ci*.04}s">
+        const t = statusCfg(c.status);
+        return `<div class="gecc-course-item" style="border-left-color:${t.cor};animation-delay:${ci*.04}s">
           <div class="gecc-course-name">${c.curso}</div>
           <div class="gecc-course-ch">${c.ch}h</div>
           <div class="gecc-course-hours">${fmt(c.total)}h GECC</div>
-          <span class="gecc-course-status" style="background:${t.bg};color:${t.fg}">${c.status}</span>
+          <span class="gecc-course-status" style="background:${t.bg};color:${t.fg}">${t.label}</span>
         </div>`;
       }).join('') : '<div class="list-empty">Nenhum curso encontrado.</div>';
 
@@ -829,17 +1098,7 @@ function toggleProg(idx, programa) {
       return;
     }
 
-    const corTag = s => s.toLowerCase() === 'realizado'
-      ? {bg:'#d4f0e5', fg:'#1a8a5a'} : {bg:'#fef3cd', fg:'#92600a'};
-
-    el.innerHTML = items.map((a, i) => {
-      const t = corTag(a.status);
-      return `<div class="prog-course-item" style="animation-delay:${i*.04}s">
-        <div class="prog-course-name">${a.nome}</div>
-        <div class="prog-course-pub">${a.pub}</div>
-        <span class="gecc-course-status" style="background:${t.bg};color:${t.fg}">${a.status}</span>
-      </div>`;
-    }).join('');
+    el.innerHTML = `<div class="acao-list">${items.map(acaoCard).join('')}</div>`;
   }
 }
 
@@ -884,11 +1143,8 @@ function renderMaratonas(rows) {
 
   // Dados a partir do índice 7 (pula título, subtítulo, linha vazia, KPI labels, KPI valores, linha vazia, cabeçalho)
   const dados = rows.slice(7).filter(r => r && r[3]);
-  const corStatus = s => s.toLowerCase() === 'realizado'
-    ? {bg:'#d4f0e5', fg:'#1a8a5a'} : {bg:'#fef3cd', fg:'#92600a'};
-
   document.getElementById('maratonas-tbody').innerHTML = dados.map((r, i) => {
-    const t = corStatus(str(r[5]));
+    const t = statusCfg(str(r[5]));
     return `<tr>
       <td>${num(r[0])}</td>
       <td><strong>${str(r[3])}</strong></td>
@@ -896,7 +1152,7 @@ function renderMaratonas(rows) {
       <td>${str(r[4])}</td>
       <td>${str(r[6])}</td>
       <td class="num">${num(r[7]) > 0 ? num(r[7]) : '—'}</td>
-      <td><span class="tag" style="background:${t.bg};color:${t.fg}">${str(r[5])}</span></td>
+      <td><span class="tag" style="background:${t.bg};color:${t.fg}">${t.label}</span></td>
     </tr>`;
   }).join('');
 }
