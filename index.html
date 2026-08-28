@@ -228,13 +228,6 @@ body{background:var(--cinza-bg);-webkit-font-smoothing:antialiased;}
 .drill-lista{margin-top:.5rem;}
 
 /* ── VISÃO MENSAL ── */
-.mes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:.45rem;}
-.mes-chip{display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.55rem .3rem;background:#fff;border:1.5px solid var(--borda);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .15s,background .15s,transform .15s;}
-.mes-chip:hover{border-color:var(--azul-claro);transform:translateY(-1px);}
-.mes-chip.sel{background:var(--azul);border-color:var(--azul);}
-.mes-chip.sel .mes-ab,.mes-chip.sel .mes-qt{color:#fff;}
-.mes-ab{font-size:.72rem;font-weight:700;color:var(--texto);letter-spacing:.03em;}
-.mes-qt{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:var(--azul);line-height:1;}
 
 .st-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem;padding-top:.9rem;border-top:1px dashed var(--borda);}
 .st-chip{display:flex;align-items:center;gap:.4rem;padding:.35rem .8rem;background:#fff;border:1.5px solid var(--borda);border-radius:99px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:600;color:var(--texto-sub);transition:all .15s;}
@@ -252,10 +245,48 @@ tbody tr:hover{background:#f7faff;}
 
 @media(max-width:600px){
   .trim-grid{grid-template-columns:repeat(2,1fr);}
-  .mes-grid{grid-template-columns:repeat(4,1fr);}
+  
   .pub-bar-lbl{width:100px;min-width:100px;font-size:.72rem;}
   .acao-instr{max-width:150px;}
   .acao-top{flex-direction:column;gap:.3rem;}
+}
+
+
+/* ═══ AJUSTES FINAIS ═══ */
+
+/* Selos e nota da contabilização por trimestre */
+.trim-card{padding-top:1.05rem;}
+.trim-card.atual{border-color:var(--azul-claro);}
+.trim-now{position:absolute;top:.42rem;left:50%;transform:translateX(-50%);font-size:.55rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--azul-claro);background:#e4eeff;padding:.1rem .45rem;border-radius:99px;}
+.trim-tag{display:inline-block;margin-top:.35rem;font-size:.58rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.1rem .45rem;border-radius:99px;}
+.tag-enc{background:#e3f5ec;color:#0e6b43;}
+.tag-prev{background:#eef1f6;color:#5a6480;}
+.trim-nota{display:flex;align-items:flex-start;gap:.55rem;margin-top:.85rem;padding:.6rem .8rem;background:#f6f9fe;border:1px solid var(--borda);border-radius:9px;font-size:.72rem;line-height:1.5;color:var(--texto-sub);}
+.trim-nota strong{color:var(--texto);font-weight:700;}
+.nota-ico{flex-shrink:0;width:15px;height:15px;border-radius:50%;background:var(--azul-claro);color:#fff;font-size:.62rem;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;margin-top:.08rem;}
+.drill-crit{font-size:.68rem;font-style:italic;color:var(--texto-sub);margin-left:.4rem;}
+
+/* Meses: barra horizontal com nome por extenso (não parece calendário) */
+.mes-bar{display:flex;flex-wrap:wrap;gap:.45rem;}
+.mes-btn{display:flex;flex-direction:column;align-items:flex-start;gap:.12rem;padding:.5rem .85rem;background:#fff;border:1.5px solid var(--borda);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;transition:border-color .15s,background .15s,transform .15s;min-width:104px;}
+.mes-btn:hover{border-color:var(--azul-claro);transform:translateY(-1px);}
+.mes-btn.sel{background:var(--azul);border-color:var(--azul);}
+.mes-btn.sel .mes-nome,.mes-btn.sel .mes-cont{color:#fff;}
+.mes-btn.sel .mes-cont{opacity:.85;}
+.mes-nome{font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;color:var(--azul);letter-spacing:.01em;white-space:nowrap;}
+.mes-cont{font-size:.68rem;color:var(--texto-sub);font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+/* Horas GECC dentro do card de ação */
+.gecc-horas{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.45rem;padding-top:.4rem;border-top:1px dashed var(--borda);}
+.gh{font-size:.68rem;color:var(--texto-sub);background:var(--cinza-bg);padding:.12rem .5rem;border-radius:99px;}
+.gh b{color:var(--azul);font-weight:700;font-variant-numeric:tabular-nums;}
+.gh-tot{background:#eef3fc;}
+.gh-tot b{color:var(--azul-med);}
+
+@media(max-width:600px){
+  .mes-bar{display:grid;grid-template-columns:repeat(2,1fr);}
+  .mes-btn{min-width:0;}
+  .trim-nota{font-size:.68rem;}
 }
 
 footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);border-top:1px solid var(--borda);margin-top:1rem;}
@@ -341,7 +372,7 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
     <div class="card" style="margin-bottom:1.25rem">
       <div class="card-header">🗓️ Ações Mês a Mês</div>
       <div class="card-body">
-        <div id="mes-chips"></div>
+        <div id="mes-nav"></div>
         <div id="mes-status"></div>
         <div id="mes-lista"></div>
       </div>
@@ -636,6 +667,7 @@ function extractGeccCursos(rows) {
     const instr = str(row[5]);
     if (!mapa[instr]) mapa[instr] = [];
     mapa[instr].push({
+      idAcao: str(row[1]),          // ← ID da ação, para cruzar com Ações InCompany
       curso:  str(row[3]),
       status: str(row[2]),
       ch:     num(row[4]),
@@ -670,10 +702,13 @@ function extractDashGecc(rows) {
 const CORES = ['#2e72d2','#e8a020','#1a8a5a','#6a1fac','#c0392b'];
 let _acoes = [];
 let _acoesInComp = [];
+let _acoesPorId = {};
 
 function renderDash2026(d, acoes) {
   _acoes = acoes;
   _acoesInComp = acoes;
+  _acoesPorId = {};
+  acoes.forEach(a => { _acoesPorId[a.id] = a; });   // índice p/ cruzar com o GECC
   const pct     = d.totalCursos > 0 ? Math.round(d.realizados / d.totalCursos * 100) : 0;
   const totPart = d.participantes.reduce((s,p)=>s+p.qtd, 0);
 
@@ -820,11 +855,63 @@ function listaAcoes(items, vazio) {
   return `<div class="acao-list">${items.map(acaoCard).join('')}</div>`;
 }
 
+// Card de ação na aba GECC: mesmos dados da aba Ações 2026 + horas GECC
+function acaoCardGecc(c, i) {
+  const a = _acoesPorId[c.idAcao] || {};
+  const s = statusCfg(a.status || c.status);
+  const nome = a.nome || c.curso || '—';
+  return `<div class="acao-item" style="--st:${s.cor};animation-delay:${(i%20)*.025}s">
+    <div class="acao-top">
+      <div class="acao-nome">${nome}</div>
+      <span class="acao-status" style="background:${s.bg};color:${s.fg}">${s.label}</span>
+    </div>
+    <div class="acao-meta">
+      ${a.proc ? `<span class="acao-proc" title="Processo ${a.proc}">📄 ${a.proc}</span>` : ''}
+      ${a.data ? `<span>📅 ${a.data}</span>` : ''}
+      ${a.pub  ? `<span>👥 ${a.pub}</span>`  : ''}
+      ${a.programa ? `<span title="${a.programa}">🏷️ ${a.programa}</span>` : ''}
+      ${c.ch ? `<span>⏱️ ${c.ch}h de curso</span>` : ''}
+    </div>
+    <div class="gecc-horas">
+      ${c.aula ? `<span class="gh"><b>${fmt(c.aula)}h</b> aula</span>` : ''}
+      ${c.mat  ? `<span class="gh"><b>${fmt(c.mat)}h</b> material</span>` : ''}
+      <span class="gh gh-tot"><b>${fmt(c.total)}h</b> GECC</span>
+    </div>
+  </div>`;
+}
+
 // ══════════════════════════════════════
 //  PAINEL POR TRIMESTRE (drill-down)
 //  Trimestre → Público → Lista de ações
 // ══════════════════════════════════════
 const TRIMS = ['1º','2º','3º','4º'];
+
+// ── REGRA DE CONTABILIZAÇÃO POR TRIMESTRE ──────────────────
+// Trimestre ENCERRADO  → conta apenas o que foi REALIZADO
+// Trimestre ATUAL/FUTURO → conta Realizado + Em andamento + A realizar
+// Cancelado e Adiado nunca entram na contagem.
+// Dinâmico: baseia-se na data de hoje, na data da ação e no status.
+const ANO_BASE = 2026;
+function trimAtual() {
+  const h = new Date();
+  if (h.getFullYear() < ANO_BASE) return 0;          // ano ainda não começou
+  if (h.getFullYear() > ANO_BASE) return 5;          // ano já terminou
+  return Math.floor(h.getMonth() / 3) + 1;           // 1..4
+}
+function trimNum(t) { return TRIMS.indexOf(t) + 1; }
+function trimEncerrado(t) { return trimNum(t) > 0 && trimNum(t) < trimAtual(); }
+
+// Status que entram na contagem, conforme o momento do trimestre
+const ST_REALIZADO = ['realizado'];
+const ST_PREVISTO  = ['realizado','em andamento','a realizar'];
+function contaNoTrim(a, t) {
+  const s = String(a.status || '').trim().toLowerCase();
+  return trimEncerrado(t) ? ST_REALIZADO.includes(s) : ST_PREVISTO.includes(s);
+}
+// Ações contabilizadas de um trimestre (aplicando a regra)
+function acoesTrim(t) {
+  return _acoes.filter(a => a.trim === t && contaNoTrim(a, t));
+}
 const PUB_CORES = { 'Servidores do TCDF':'#2e72d2', 'Jurisdicionados':'#e8820a', 'Sociedade':'#1a8a5a' };
 let _trimSel = null, _pubSel = null;
 
@@ -842,21 +929,35 @@ function publicosDe(lista) {
 
 function renderTrimCards() {
   const el = document.getElementById('trim-cards');
+  const atual = trimAtual();
   el.innerHTML = `<div class="trim-grid">${TRIMS.map(t => {
-    const itens = _acoes.filter(a => a.trim === t);
+    const itens = acoesTrim(t);                     // ← aplica a regra de contagem
     const pubs  = publicosDe(itens);
     const ativo = _trimSel === t ? ' sel' : '';
+    const enc   = trimEncerrado(t);
+    const eAtual= trimNum(t) === atual;
     const mini  = pubs.length
       ? `<div class="trim-mini">${pubs.map(p =>
           `<span class="trim-mini-dot" style="background:${p.cor}" title="${p.nome}: ${p.itens.length}"></span>`
         ).join('')}</div>`
       : '';
-    return `<button class="trim-card${ativo}" onclick="selTrim('${t}')">
+    const selo = enc
+      ? '<span class="trim-tag tag-enc" title="Trimestre encerrado: contabiliza apenas ações realizadas">realizadas</span>'
+      : `<span class="trim-tag tag-prev" title="Contabiliza ações realizadas, em andamento e a realizar">previstas</span>`;
+    return `<button class="trim-card${ativo}${eAtual?' atual':''}" onclick="selTrim('${t}')">
+      ${eAtual ? '<span class="trim-now">em curso</span>' : ''}
       <div class="trim-num">${itens.length}</div>
       <div class="trim-lbl">${t} Trimestre</div>
+      ${selo}
       ${mini}
     </button>`;
-  }).join('')}</div>`;
+  }).join('')}</div>
+  <div class="trim-nota">
+    <span class="nota-ico">i</span>
+    <span><strong>Trimestres encerrados</strong> exibem somente ações <strong>realizadas</strong>.
+    <strong>Trimestre em curso e futuros</strong> somam ações realizadas, em andamento e a realizar.
+    Ações canceladas e adiadas não entram na contagem.</span>
+  </div>`;
   renderTrimDrill();
 }
 
@@ -874,9 +975,9 @@ function renderTrimDrill() {
   const el = document.getElementById('trim-drill');
   if (!_trimSel) { el.innerHTML = '<div class="hint">Selecione um trimestre para ver a distribuição por público.</div>'; return; }
 
-  const itens = _acoes.filter(a => a.trim === _trimSel);
+  const itens = acoesTrim(_trimSel);               // ← mesma regra de contagem
   const pubs  = publicosDe(itens);
-  if (!itens.length) { el.innerHTML = `<div class="list-empty">Sem ações no ${_trimSel} trimestre.</div>`; return; }
+  if (!itens.length) { el.innerHTML = `<div class="list-empty">Sem ações contabilizadas no ${_trimSel} trimestre.</div>`; return; }
 
   const max = Math.max(...pubs.map(p => p.itens.length), 1);
   const barras = pubs.map(p => {
@@ -893,7 +994,9 @@ function renderTrimDrill() {
     : '<div class="hint">Clique em um público para ver as ações.</div>';
 
   el.innerHTML = `<div class="drill">
-    <div class="drill-head"><strong>${_trimSel} Trimestre</strong> · ${itens.length} ${itens.length===1?'ação':'ações'}</div>
+    <div class="drill-head"><strong>${_trimSel} Trimestre</strong> · ${itens.length} ${itens.length===1?'ação':'ações'}
+      <span class="drill-crit">${trimEncerrado(_trimSel) ? 'somente realizadas' : 'realizadas + em andamento + a realizar'}</span>
+    </div>
     <div class="pub-bars">${barras}</div>
     ${lista}
   </div>`;
@@ -905,17 +1008,18 @@ function renderTrimDrill() {
 let _mesSel = 0, _stSel = null;
 
 function renderMesChips() {
-  const el = document.getElementById('mes-chips');
+  const el = document.getElementById("mes-nav");
   const meses = [...new Set(_acoes.map(a => a.mes).filter(Boolean))].sort((a,b)=>a-b);
   if (!meses.length) { el.innerHTML = '<div class="list-empty">Sem datas disponíveis.</div>'; return; }
   if (!_mesSel || !meses.includes(_mesSel)) {
     const hoje = new Date().getMonth() + 1;
     _mesSel = meses.includes(hoje) ? hoje : meses[0];
   }
-  el.innerHTML = `<div class="mes-grid">${meses.map(m => {
+  el.innerHTML = `<div class="mes-bar">${meses.map(m => {
     const n = _acoes.filter(a => a.mes === m).length;
-    return `<button class="mes-chip${_mesSel===m?' sel':''}" onclick="selMes(${m})">
-      <span class="mes-ab">${MESES_ABREV[m]}</span><span class="mes-qt">${n}</span>
+    return `<button class="mes-btn${_mesSel===m?' sel':''}" onclick="selMes(${m})">
+      <span class="mes-nome">${MESES_NOME[m]}</span>
+      <span class="mes-cont">${n} ${n===1?'ação':'ações'}</span>
     </button>`;
   }).join('')}</div>`;
   renderMesStatus();
@@ -998,15 +1102,9 @@ function renderDashGecc(d, geccCursos) {
   document.getElementById('gecc-tbody').innerHTML =
     inst.map((i, idx) => {
       const cursos = geccCursos[i.nome] || [];
-      const detalhe = cursos.length ? cursos.map((c,ci) => {
-        const t = statusCfg(c.status);
-        return `<div class="gecc-course-item" style="border-left-color:${t.cor};animation-delay:${ci*.04}s">
-          <div class="gecc-course-name">${c.curso}</div>
-          <div class="gecc-course-ch">${c.ch}h</div>
-          <div class="gecc-course-hours">${fmt(c.total)}h GECC</div>
-          <span class="gecc-course-status" style="background:${t.bg};color:${t.fg}">${t.label}</span>
-        </div>`;
-      }).join('') : '<div class="list-empty">Nenhum curso encontrado.</div>';
+      const detalhe = cursos.length
+        ? `<div class="acao-list">${cursos.map((c,ci) => acaoCardGecc(c, ci)).join('')}</div>`
+        : '<div class="list-empty">Nenhum curso encontrado.</div>';
 
       return `<tr class="gecc-tr-click" id="gecc-tr-${idx}" onclick="toggleGeccInstr(${idx})">
         <td>${i.nome}</td><td class="num">${i.aula}</td>
