@@ -211,8 +211,6 @@ body{background:var(--cinza-bg);-webkit-font-smoothing:antialiased;}
 .trim-card.sel{border-color:var(--azul);background:#f5f9ff;box-shadow:0 0 0 2px rgba(10,42,94,.09);}
 .trim-num{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:var(--azul);line-height:1;}
 .trim-lbl{font-size:.71rem;color:var(--texto-sub);margin-top:.28rem;font-weight:500;}
-.trim-mini{display:flex;justify-content:center;gap:.25rem;margin-top:.5rem;}
-.trim-mini-dot{width:7px;height:7px;border-radius:50%;}
 
 .drill{margin-top:1rem;padding-top:.9rem;border-top:1px dashed var(--borda);}
 .drill-head{font-size:.78rem;color:var(--texto-sub);margin-bottom:.7rem;}
@@ -935,15 +933,9 @@ function renderTrimCards() {
   const atual = trimAtual();
   el.innerHTML = `<div class="trim-grid">${TRIMS.map(t => {
     const itens = acoesTrim(t);                     // ← aplica a regra de contagem
-    const pubs  = publicosDe(itens);
     const ativo = _trimSel === t ? ' sel' : '';
     const enc   = trimEncerrado(t);
     const eAtual= trimNum(t) === atual;
-    const mini  = pubs.length
-      ? `<div class="trim-mini">${pubs.map(p =>
-          `<span class="trim-mini-dot" style="background:${p.cor}" title="${p.nome}: ${p.itens.length}"></span>`
-        ).join('')}</div>`
-      : '';
     // Trimestre encerrado → selo único "realizadas".
     // Trimestre vigente/futuro → composição real por status (sem termos inventados).
     let selo;
@@ -965,7 +957,6 @@ function renderTrimCards() {
       <div class="trim-num">${itens.length}</div>
       <div class="trim-lbl">${t} Trimestre</div>
       ${selo}
-      ${mini}
     </button>`;
   }).join('')}</div>
   <div class="trim-nota">
