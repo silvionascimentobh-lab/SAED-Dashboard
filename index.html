@@ -550,12 +550,18 @@ function calcDash2026(acoes, rowsDash) {
     publicoCursos: [], participantes: [], programas: []
   };
 
-  // Público-alvo: cursos REALIZADOS por público e participantes (cols O, P, Q)
+  // Público-alvo: TODOS os cursos previstos (qualquer status exceto cancelado),
+  // para o TOTAL bater com o card "Total de Cursos" e com a lista aberta ao clicar.
+  // Participantes (donut) continuam sendo apenas dos REALIZADOS (cols O, P, Q).
   const realiz = acoes.filter(a => stNorm(a.status) === 'realizado');
-  [['Servidores do TCDF','partServ'],['Jurisdicionados','partJur'],['Sociedade','partSoc']].forEach(([label, campo]) => {
-    d.publicoCursos.push({ label, qtd: realiz.filter(a => stNorm(a.pub) === stNorm(label)).length });
+  const PUBS = [['Servidores do TCDF','partServ'],['Jurisdicionados','partJur'],['Sociedade','partSoc']];
+  PUBS.forEach(([label, campo]) => {
+    d.publicoCursos.push({ label, qtd: acoes.filter(a => stNorm(a.pub) === stNorm(label)).length });
     d.participantes.push({ label, qtd: realiz.reduce((s,a) => s + a[campo], 0) });
   });
+  // Ações sem público (ou com público fora dos três) — linha extra só se existirem
+  const semPub = acoes.filter(a => !PUBS.some(([l]) => stNorm(a.pub) === stNorm(l))).length;
+  if (semPub) d.publicoCursos.push({ label: 'Não informado', qtd: semPub });
 
   // Programas: ordem da aba Dashboard 2026 + qualquer programa novo encontrado nas ações
   const nomes = [];
@@ -887,7 +893,9 @@ function filterPub(filtro, btn) {
 function renderPubPanel(label, idx, filtro) {
   const panel = document.getElementById('publist-' + idx);
   const cor   = idx === 0 ? '#2e72d2' : idx === 1 ? '#e8a020' : '#1a8a5a';
-  const all   = _acoes.filter(a => a.pub.toLowerCase() === label.toLowerCase());
+  const all   = label === 'Não informado'
+    ? _acoes.filter(a => !['servidores do tcdf','jurisdicionados','sociedade'].includes(stNorm(a.pub)))
+    : _acoes.filter(a => a.pub.toLowerCase() === label.toLowerCase());
   const totR  = all.filter(a => a.status.toLowerCase() === 'realizado').length;
   const totA  = all.length - totR;
 
