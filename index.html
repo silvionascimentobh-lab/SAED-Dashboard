@@ -290,6 +290,18 @@ tbody tr:hover{background:#f7faff;}
   .trim-nota{font-size:.68rem;}
 }
 
+/* ── AÇÕES CANCELADAS (registro, fora de todas as contagens) ── */
+.card-header.canc-header{background:#8e2a1f;}
+.canc-toggle{display:flex;align-items:center;gap:.85rem;width:100%;padding:.7rem .9rem;background:#fff;border:1.5px solid var(--borda);border-left:3px solid #c0392b;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;transition:background .15s,border-color .15s;}
+.canc-toggle:hover{background:#fdf6f5;border-color:#e3b3ad;border-left-color:#c0392b;}
+.canc-toggle.open{background:#fbe6e4;border-color:#e3b3ad;border-left-color:#c0392b;}
+.canc-toggle:disabled{cursor:default;opacity:.7;}
+.canc-n{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#c0392b;line-height:1;font-variant-numeric:tabular-nums;min-width:1.6rem;text-align:center;}
+.canc-txt{flex:1;font-size:.8rem;color:var(--texto);}
+.canc-txt small{display:block;font-size:.7rem;color:var(--texto-sub);margin-top:.1rem;}
+.canc-chev{font-size:1.1rem;color:var(--texto-sub);transition:transform .2s;}
+.canc-toggle.open .canc-chev{transform:rotate(90deg);color:#c0392b;}
+
 footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);border-top:1px solid var(--borda);margin-top:1rem;}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @media(max-width:600px){
@@ -364,10 +376,7 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
     <div class="card" style="margin-bottom:1.25rem">
       <div class="card-header">Cursos por Programa — Todos os Status</div>
       <div class="card-body">
-        <table><thead><tr>
-          <th>Programa</th><th class="num">Realizados</th>
-          <th class="num">A Realizar</th><th class="num">Total</th><th class="num">%</th>
-        </tr></thead><tbody id="prog-tbody"></tbody></table>
+        <table><thead id="prog-thead"></thead><tbody id="prog-tbody"></tbody></table>
       </div>
     </div>
     <div class="card" style="margin-bottom:1.25rem">
@@ -376,6 +385,13 @@ footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--texto-sub);bor
         <div id="mes-nav"></div>
         <div id="mes-status"></div>
         <div id="mes-lista"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-header canc-header">🚫 Ações Canceladas</div>
+      <div class="card-body">
+        <div id="canc-toggle"></div>
+        <div id="canc-lista"></div>
       </div>
     </div>
   </div>
@@ -480,12 +496,19 @@ function processBuffer(buffer, sourceName) {
       const rInComp    = parseSheet(wb, 'Ações InCompany');
       const rMaratonas = parseSheet(wb, 'Dashboard Maratonas');
 
-      const data2026   = extractDash2026(rDash);
-      const dataGecc   = extractDashGecc(rGecc);
-      const acoes      = extractAcoes(rInComp);
-      const geccCursos = extractGeccCursos(rGeccRaw);
+      // ── REGRA ÚNICA: ações "Cancelado" saem de TODAS as contagens e listas ──
+      // Todos os números da aba Ações 2026 são calculados aqui a partir da
+      // aba "Ações InCompany" (e não das fórmulas da aba "Dashboard 2026",
+      // que contam as canceladas no total).
+      const todasAcoes = extractAcoes(rInComp);
+      const acoes      = todasAcoes.filter(a => !ehCancelado(a.status));
+      const canceladas = todasAcoes.filter(a =>  ehCancelado(a.status));
 
-      renderDash2026(data2026, acoes);
+      const data2026   = calcDash2026(acoes, rDash);
+      const dataGecc   = extractDashGecc(rGecc);
+      const geccCursos = extractGeccCursos(rGeccRaw, todasAcoes);
+
+      renderDash2026(data2026, acoes, canceladas, todasAcoes);
       renderDashGecc(dataGecc, geccCursos);
       renderMaratonas(rMaratonas);
 
@@ -505,38 +528,53 @@ function parseSheet(wb, name) {
 }
 
 // ══════════════════════════════════════
-//  EXTRAÇÃO — DASHBOARD 2026
-//  Mapeamento confirmado via Node.js:
-//  [4]  → totalCursos=col0, realizados=col3, aRealizar=col6
-//  [10] → Servidores TCDF: cursos=col1, part=col4
-//  [11] → Jurisdicionados: cursos=col1, part=col4
-//  [12] → Sociedade: cursos=col1, part=col4
-//  [32-38] → programas: nome=col0, r=col1, a=col2
+//  CANCELADAS — critério único para todo o painel
+//  Aceita "Cancelado", "Cancelado " (com espaço), "Cancelada" etc.
 // ══════════════════════════════════════
-function extractDash2026(rows) {
-  const d = { totalCursos:0, realizados:0, aRealizar:0, publicoCursos:[], participantes:[], programas:[] };
+function stNorm(s) { return String(s || '').trim().toLowerCase(); }
+function ehCancelado(s) { return stNorm(s).startsWith('cancel'); }
 
-  if (rows[4]) {
-    d.totalCursos = num(rows[4][0]);
-    d.realizados  = num(rows[4][3]);
-    d.aRealizar   = num(rows[4][6]);
-  }
+// ══════════════════════════════════════
+//  CÁLCULO — AÇÕES 2026 (a partir das ações NÃO canceladas)
+//  A aba "Dashboard 2026" é usada apenas para a ORDEM dos programas
+//  (linhas 32+ col0); todos os números vêm de "Ações InCompany".
+// ══════════════════════════════════════
+function calcDash2026(acoes, rowsDash) {
+  const conta = s => acoes.filter(a => stNorm(a.status) === s).length;
+  const d = {
+    totalCursos: acoes.length,
+    realizados:  conta('realizado'),
+    andamento:   conta('em andamento'),
+    aRealizar:   conta('a realizar'),
+    adiados:     conta('adiado'),
+    publicoCursos: [], participantes: [], programas: []
+  };
 
-  [[10,'Servidores do TCDF'],[11,'Jurisdicionados'],[12,'Sociedade']].forEach(([i, label]) => {
-    if (!rows[i]) return;
-    d.publicoCursos.push({ label, qtd: num(rows[i][1]) });
-    d.participantes.push({ label, qtd: num(rows[i][4]) });
+  // Público-alvo: cursos REALIZADOS por público e participantes (cols O, P, Q)
+  const realiz = acoes.filter(a => stNorm(a.status) === 'realizado');
+  [['Servidores do TCDF','partServ'],['Jurisdicionados','partJur'],['Sociedade','partSoc']].forEach(([label, campo]) => {
+    d.publicoCursos.push({ label, qtd: realiz.filter(a => stNorm(a.pub) === stNorm(label)).length });
+    d.participantes.push({ label, qtd: realiz.reduce((s,a) => s + a[campo], 0) });
   });
 
-  // Ler programas dinamicamente a partir do índice 32 até encontrar TOTAL ou fim
-  for (let i = 32; i < rows.length; i++) {
-    const row = rows[i];
+  // Programas: ordem da aba Dashboard 2026 + qualquer programa novo encontrado nas ações
+  const nomes = [];
+  for (let i = 32; i < (rowsDash || []).length; i++) {
+    const row = rowsDash[i];
     if (!row || !row[0]) continue;
     const nome = str(row[0]);
     if (nome === 'TOTAL' || nome === 'Programa') break;
     if (nome === '(Sem Programa)') continue;
-    d.programas.push({ nome, r: num(row[1]), a: num(row[2]) });
+    nomes.push(nome);
   }
+  acoes.forEach(a => {
+    if (a.programa && !nomes.some(n => stNorm(n) === stNorm(a.programa))) nomes.push(a.programa);
+  });
+  nomes.forEach(nome => {
+    d.programas.push({ nome, itens: acoes.filter(a => stNorm(a.programa) === stNorm(nome)) });
+  });
+  const semProg = acoes.filter(a => !a.programa);
+  if (semProg.length) d.programas.push({ nome: '(Sem programa)', itens: semProg });
   return d;
 }
 
@@ -642,6 +680,9 @@ function extractAcoes(rows) {
       programa: str(row[6]),
       data:     str(row[7]),
       instr:    str(row[19]),
+      partServ: num(row[14]),        // P. Servidores
+      partJur:  num(row[15]),        // P. Jurisdicionados
+      partSoc:  num(row[16]),        // P. Sociedade
       trim:     trimestre(inicio),
       mes:      mesDe(inicio),         // ← mês calculado do MESMO parse
       ano:      anoDe(inicio),
@@ -659,12 +700,17 @@ function extractAcoes(rows) {
 //  [0]=Ano [1]=ID [2]=Status [3]=Curso [4]=CH
 //  [5]=Instrutor [6]=QtdInstr [7]=Aula [8]=Mat [9]=Total
 // ══════════════════════════════════════
-function extractGeccCursos(rows) {
+function extractGeccCursos(rows, todasAcoes) {
+  // Status oficial de cada ação (aba Ações InCompany), para excluir canceladas
+  // mesmo que a aba GECC 2026 esteja desatualizada.
+  const statusPorId = {};
+  (todasAcoes || []).forEach(a => { statusPorId[a.id] = a.status; });
   // Mapa: instrutor → lista de cursos
   const mapa = {};
   for (let i = 1; i < rows.length; i++) {
     const row = rows[i];
     if (!row || row[0] != 2026 || !row[5]) continue;
+    if (ehCancelado(row[2]) || ehCancelado(statusPorId[str(row[1])])) continue;   // ← cancelada: fora do GECC
     const instr = str(row[5]);
     if (!mapa[instr]) mapa[instr] = [];
     mapa[instr].push({
@@ -705,18 +751,25 @@ let _acoes = [];
 let _acoesInComp = [];
 let _acoesPorId = {};
 
-function renderDash2026(d, acoes) {
-  _acoes = acoes;
+let _canceladas = [];
+let _programas  = [];
+
+function renderDash2026(d, acoes, canceladas, todasAcoes) {
+  _acoes = acoes;                 // somente NÃO canceladas
   _acoesInComp = acoes;
+  _canceladas = canceladas || [];
+  _programas = d.programas;
   _acoesPorId = {};
-  acoes.forEach(a => { _acoesPorId[a.id] = a; });   // índice p/ cruzar com o GECC
-  const pct     = d.totalCursos > 0 ? Math.round(d.realizados / d.totalCursos * 100) : 0;
+  (todasAcoes || acoes).forEach(a => { _acoesPorId[a.id] = a; });   // índice p/ cruzar com o GECC
   const totPart = d.participantes.reduce((s,p)=>s+p.qtd, 0);
 
+  // Total = Realizados + Em andamento + A realizar (+ Adiados, se houver). Canceladas fora.
   document.getElementById('kpi-2026').innerHTML =
     kpiHTML('#0a2a5e', d.totalCursos, 'Total de Cursos') +
     kpiHTML('#1a8a5a', d.realizados,  'Realizados') +
+    kpiHTML('#e8820a', d.andamento,   'Em Andamento') +
     kpiHTML('#e8a020', d.aRealizar,   'A Realizar') +
+    (d.adiados ? kpiHTML('#2e72d2', d.adiados, 'Adiados') : '') +
     kpiHTML('#2e72d2', totPart,        'Participantes');
 
   // Barras público (clicáveis)
@@ -737,45 +790,71 @@ function renderDash2026(d, acoes) {
   // Donut
   buildDonut(d.participantes, 'donut-svg', 'donut-legend', totPart, CORES);
 
-  // Tabela programas
-  const totR = d.programas.reduce((s,p)=>s+p.r, 0);
-  const totA = d.programas.reduce((s,p)=>s+p.a, 0);
-  const totT = totR + totA;
+  // Tabela programas — colunas por status (canceladas nunca entram).
+  // "Em andamento" e "Adiados" só aparecem se houver alguma ação nesse status.
+  const PROG_COLS = [
+    { s:'realizado',    tit:'Realizados' },
+    { s:'em andamento', tit:'Em Andamento' },
+    { s:'a realizar',   tit:'A Realizar' },
+    { s:'adiado',       tit:'Adiados' }
+  ].filter(c => c.s === 'realizado' || c.s === 'a realizar' || acoes.some(a => stNorm(a.status) === c.s));
+  const nCols = PROG_COLS.length + 3;
+  const contaSt = (lista, s) => lista.filter(a => stNorm(a.status) === s).length;
+  const totT = d.programas.reduce((s,p)=>s+p.itens.length, 0);
+
+  document.getElementById('prog-thead').innerHTML = `<tr>
+    <th>Programa</th>${PROG_COLS.map(c => `<th class="num">${c.tit}</th>`).join('')}
+    <th class="num">Total</th><th class="num">%</th></tr>`;
+
   document.getElementById('prog-tbody').innerHTML =
     d.programas.map((p, idx) => {
-      const t = p.r + p.a;
+      const t = p.itens.length;
       const pctP = totT > 0 ? Math.round(t/totT*100) : 0;
-
-      // cursos deste programa vindos de Ações InCompany
-      const cursosPrograma = acoes.filter(a => {
-        // comparar programa do InCompany (não disponível direto) — usar nome do curso cruzando
-        // A aba InCompany não tem coluna Programa — filtrar pelo nome do programa via Dashboard 2026
-        // Como fallback, exibir todos os cursos do público correspondente
-        return false; // preenchido abaixo via _progCursos
-      });
-
-      return `<tr class="prog-tr-click" id="prog-tr-${idx}" onclick="toggleProg(${idx}, '${p.nome.replace(/'/g,"\\'")}')">
+      return `<tr class="prog-tr-click" id="prog-tr-${idx}" onclick="toggleProg(${idx})">
         <td>${p.nome}</td>
-        <td class="num"><span class="tag tag-r">${p.r}</span></td>
-        <td class="num"><span class="tag tag-a">${p.a}</span></td>
+        ${PROG_COLS.map(c => {
+          const cfg = statusCfg(c.s);
+          return `<td class="num"><span class="tag" style="background:${cfg.bg};color:${cfg.fg}">${contaSt(p.itens, c.s)}</span></td>`;
+        }).join('')}
         <td class="num bold">${t}</td>
         <td class="num">${pctP}%</td>
       </tr>
       <tr class="prog-detail-row" id="prog-detail-${idx}">
-        <td class="prog-detail-cell" colspan="5">
+        <td class="prog-detail-cell" colspan="${nCols}">
           <div class="prog-course-list" id="prog-courses-${idx}"></div>
         </td>
       </tr>`;
     }).join('') +
     `<tr style="border-top:2px solid var(--borda)">
       <td class="bold">TOTAL</td>
-      <td class="num bold">${totR}</td><td class="num bold">${totA}</td>
+      ${PROG_COLS.map(c => `<td class="num bold">${contaSt(acoes, c.s)}</td>`).join('')}
       <td class="num bold">${totT}</td><td class="num bold">100%</td>
     </tr>`;
 
   // Listas
   renderTrimCards();
   renderMesChips();
+  renderCanceladas();
+}
+
+// ══════════════════════════════════════
+//  AÇÕES CANCELADAS — apenas registro (fora de qualquer contagem)
+// ══════════════════════════════════════
+let _cancAberto = false;
+function toggleCanceladas() { _cancAberto = !_cancAberto; renderCanceladas(); }
+function renderCanceladas() {
+  const n = _canceladas.length;
+  const txt = n === 0
+    ? 'Nenhuma ação cancelada em 2026.'
+    : `${n === 1 ? 'ação cancelada' : 'ações canceladas'} em 2026
+       <small>${_cancAberto ? 'Clique para recolher a lista' : 'Clique para ver a lista'} · não entram em nenhuma contagem do painel</small>`;
+  document.getElementById('canc-toggle').innerHTML =
+    `<button class="canc-toggle${_cancAberto && n ? ' open' : ''}" onclick="toggleCanceladas()"${n ? '' : ' disabled'}>
+      <span class="canc-n">${n}</span>
+      <span class="canc-txt">${txt}</span>
+      ${n ? '<span class="canc-chev">›</span>' : ''}
+    </button>`;
+  document.getElementById('canc-lista').innerHTML = (_cancAberto && n) ? listaAcoes(_canceladas) : '';
 }
 
 // Estado do painel de público aberto
@@ -963,7 +1042,7 @@ function renderTrimCards() {
     <span class="nota-ico">i</span>
     <span><strong>Trimestres encerrados</strong> exibem somente ações <strong>realizadas</strong>.
     O <strong>trimestre atual e os seguintes</strong> somam <strong>realizadas</strong>, <strong>em andamento</strong> e <strong>a realizar</strong> — a composição aparece em cada card.
-    Ações canceladas e adiadas não entram na contagem.</span>
+    Ações adiadas não entram na contagem; ações canceladas não entram em nenhuma contagem do painel (ver “Ações Canceladas” ao final).</span>
   </div>`;
   renderTrimDrill();
 }
@@ -1080,7 +1159,23 @@ function renderDashGecc(d, geccCursos) {
   geccCursos = geccCursos || {};
   // Filtros: sem TOTAL, sem registros que não são pessoas, sem GECC zerado
   const NAO_PESSOA = ['o','0','diversos','n/a','na','-','--','vários','varios','outros'];
-  const inst = d.instrutores.filter(i => {
+
+  // Horas de aula/material e nº de ações são RECALCULADOS a partir das linhas
+  // da aba GECC 2026 já sem as ações canceladas (extractGeccCursos).
+  // Horas de Examinador não se vinculam a uma ação: vêm da aba Dashboard GECC 2026.
+  const r2 = v => Math.round(v * 100) / 100;
+  const examPor = {};
+  d.instrutores.forEach(i => { examPor[i.nome] = i.exam; });
+  const nomes = new Set([...d.instrutores.map(i => i.nome), ...Object.keys(geccCursos)]);
+  const recalc = [...nomes].map(nome => {
+    const cs   = geccCursos[nome] || [];
+    const aula = r2(cs.reduce((s,c) => s + c.aula, 0));
+    const mat  = r2(cs.reduce((s,c) => s + c.mat,  0));
+    const exam = r2(examPor[nome] || 0);
+    return { nome, aula, mat, exam, total: r2(aula + mat + exam), acoes: cs.length };
+  }).sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+
+  const inst = recalc.filter(i => {
     if (!i.nome) return false;
     const n = i.nome.trim();
     const nl = n.toLowerCase();
@@ -1092,7 +1187,7 @@ function renderDashGecc(d, geccCursos) {
     if (i.total <= 0) return false;                  // remove GECC zerado
     return true;
   });
-  const totAula  = inst.reduce((s,i)=>s+i.aula,  0);
+  const totAula  = r2(inst.reduce((s,i)=>s+i.aula,  0));
   const totMat   = inst.reduce((s,i)=>s+i.mat,   0);
   const totExam  = inst.reduce((s,i)=>s+i.exam,  0);
   const totTotal = inst.reduce((s,i)=>s+i.total, 0);
@@ -1182,7 +1277,7 @@ function buildDonut(data, svgId, legendId, total, cores) {
   t2.setAttribute('font-family','DM Sans,sans-serif');t2.textContent='participantes';svg.appendChild(t2);
 }
 
-function toggleProg(idx, programa) {
+function toggleProg(idx) {
   const tr     = document.getElementById('prog-tr-' + idx);
   const detail = document.getElementById('prog-detail-' + idx);
   const isOpen = detail.classList.contains('open');
@@ -1194,8 +1289,8 @@ function toggleProg(idx, programa) {
     detail.classList.add('open');
     tr.classList.add('selected');
 
-    // Buscar cursos do programa na aba Ações InCompany (col [6] = Programa)
-    const items = _acoesInComp.filter(a => str(a.programa).toLowerCase() === programa.toLowerCase());
+    // Cursos do programa (já sem as canceladas), calculados em calcDash2026
+    const items = (_programas[idx] && _programas[idx].itens) || [];
     const el = document.getElementById('prog-courses-' + idx);
 
     if (!items.length) {
@@ -1235,23 +1330,24 @@ function renderMaratonas(rows) {
   const num = v => (v===null||v===undefined||v==='') ? 0 : +v||0;
   const str = v => v===null||v===undefined ? '' : String(v).trim();
 
-  // KPIs na linha índice 4: [0]=Total marat, [3]=Total part, [6]=Média
-  const kpiRow = rows[4] || [];
-  const totMarat = num(kpiRow[0]);
-  const totPart  = num(kpiRow[3]);
-  const media    = num(kpiRow[6]);
+  // Dados a partir do índice 7 (pula título, subtítulo, linha vazia, KPI labels, KPI valores, linha vazia, cabeçalho)
+  // Maratonas CANCELADAS são excluídas da lista e dos KPIs.
+  const dados = rows.slice(7).filter(r => r && r[3] && !ehCancelado(r[5]));
+
+  // KPIs recalculados sem as canceladas (as fórmulas da aba contam todas)
+  const totMarat = dados.length;
+  const totPart  = dados.reduce((s,r) => s + num(r[7]), 0);
+  const media    = totMarat ? totPart / totMarat : 0;
 
   document.getElementById('kpi-maratonas').innerHTML =
     kpiHTML('#0a2a5e', totMarat,  'Total de Maratonas') +
     kpiHTML('#2e72d2', totPart,   'Total de Participantes') +
     kpiHTML('#e8a020', Math.round(media), 'Média de Participantes');
 
-  // Dados a partir do índice 7 (pula título, subtítulo, linha vazia, KPI labels, KPI valores, linha vazia, cabeçalho)
-  const dados = rows.slice(7).filter(r => r && r[3]);
   document.getElementById('maratonas-tbody').innerHTML = dados.map((r, i) => {
     const t = statusCfg(str(r[5]));
     return `<tr>
-      <td>${num(r[0])}</td>
+      <td>${i + 1}</td>
       <td><strong>${str(r[3])}</strong></td>
       <td class="num">${num(r[2])}</td>
       <td>${str(r[4])}</td>
